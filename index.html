@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1621">
+<title>V60 Coffee</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="V60">
+</head>
+<body>
+
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone-width column, sticky bottom tab bar, Frosted Morning theme (single dark look by choice) */
+:root{
+  --bg:#0E1621; --card:#182433; --card2:#1E3045; --line:#2A3A4E;
+  --text:#EAF2F8; --muted:#A7B8C8; --accent:#9FD0F0; --accent-ink:#0E1621; --coffee:#D29B6C;
+  --warn:#F2C14E; --good:#9BD39B;
+  --display:'Readex Pro', 'Segoe UI', system-ui, sans-serif;
+  --body:'Readex Pro', 'Segoe UI', system-ui, sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.45}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.snow{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.flake{position:absolute;top:-10px;border-radius:50%;background:var(--text);animation:fall linear infinite}
+@keyframes fall{to{transform:translate(-24px,110vh)}}
+.app{position:relative;z-index:1;max-width:480px;margin:0 auto;min-height:100%;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 110px;display:flex;flex-direction:column;gap:14px}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.greet{font-size:13px;color:var(--muted)}
+h1{margin:0;font-family:var(--display);font-weight:700;font-size:28px;line-height:1.1;text-wrap:balance}
+h2{margin:0;font-family:var(--display);font-weight:700;font-size:22px}
+.lang-btn{min-width:64px;height:44px;border-radius:22px;border:1px solid var(--line);background:var(--card);cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.label{font-size:13px;color:var(--muted)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:24px;padding:4px}
+.seg button{height:42px;border-radius:20px;border:none;background:transparent;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+select,input[type=number],input[type=text],input[type=date],textarea{width:100%;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);padding:8px 12px}
+textarea{min-height:64px;resize:vertical}
+input[type=range]{width:100%;accent-color:var(--accent);min-height:32px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat b{font-family:var(--display);font-weight:700;font-size:22px;font-variant-numeric:tabular-nums}
+.stat.hi b{color:var(--accent)}
+.stat span{font-size:12px;color:var(--muted)}
+.warn{color:var(--warn);font-size:14px}
+.steps{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.steps li{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;font-variant-numeric:tabular-nums}
+.steps li.now{border-color:var(--accent);background:var(--card2);font-weight:700}
+.steps li.past{opacity:.55}
+.steps li .tm{color:var(--muted)}
+.steps li.now .tm{color:var(--accent)}
+.btn{min-height:52px;border-radius:26px;border:none;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:17px;cursor:pointer;padding:0 20px}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line);font-weight:500}
+.btn.small{min-height:44px;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--line);background:transparent;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.faces{display:flex;justify-content:space-between}
+.face{width:52px;height:52px;border-radius:26px;border:2px solid transparent;background:transparent;font-size:26px;cursor:pointer}
+.face[aria-pressed="true"]{border-color:var(--accent);background:var(--card2)}
+.fix{border:1px solid var(--accent)}
+.fix .big{font-family:var(--display);font-weight:700;font-size:22px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.muted{color:var(--muted);font-size:14px}
+.clock{font-family:var(--display);font-size:64px;line-height:1;text-align:center;font-variant-numeric:tabular-nums}
+.pour{display:flex;justify-content:center}
+.stream{stroke-dasharray:6 6;animation:flow .6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-12}}
+.drip{animation:drip 1.4s ease-in infinite}
+.drip2{animation:drip 1.4s ease-in .7s infinite}
+@keyframes drip{0%{transform:translateY(0);opacity:1}85%{opacity:1}100%{transform:translateY(18px);opacity:0}}
+.level{transform-box:fill-box;transform-origin:bottom;animation:fill 7s ease-in-out infinite alternate}
+@keyframes fill{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+.paused .stream,.paused .drip,.paused .drip2,.paused .level{animation-play-state:paused}
+.list{display:flex;flex-direction:column;gap:10px}
+.bean-title{font-weight:700;font-size:17px}
+.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:10px;border:1px solid var(--line);color:var(--muted)}
+.badge.ex{border-color:var(--warn);color:var(--warn)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.tabs .in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+nav.tabs button{min-height:60px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;color:var(--muted);cursor:pointer}
+nav.tabs button .ic{font-size:20px}
+nav.tabs button[aria-current="page"]{color:var(--accent);font-weight:700}
+.toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:20px;font-weight:700;z-index:10}
+ul.plain{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:4px}
+@media (prefers-reduced-motion: reduce){.flake,.stream,.drip,.drip2,.level{animation:none}.flake{display:none}}
+</style>
+
+<div class="snow" aria-hidden="true" id="snow"></div>
+<main class="app" id="app"></main>
+<nav class="tabs" id="tabs" aria-label="Sections"></nav>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- strings ---------- */
+const S = {
+en:{
+  appName:'V60 Coffee', morning:'Good morning', evening:'Good evening',
+  tabBrew:'Brew', tabBeans:'Beans', tabLog:'Log', tabMe:'Settings',
+  bean:'Bean', method:'Method', v60:'V60', switch:'Switch', hot:'Hot', iced:'Iced',
+  startFrom:'Start from', byCoffee:'Coffee grams', byCups:'Cups',
+  coffeeG:'Coffee (g)', cups:'Cups of {n} ml', ratio:'Ratio', iceShare:'Ice share', dripper:'Dripper size',
+  outCoffee:'Coffee', outHot:'Hot water', outWater:'Water', outIce:'Ice', outBloom:'Bloom', outTemp:'Water', outYield:'In your cup', outGrind:'Grind',
+  clicks:'clicks', steepAdj:'Steep adjusted {s}',
+  warn01:'Over 20 g is a lot for a V60 01. Use the 02.', warn02:'Over 30 g may overflow a V60 02.', warnSw:'The Switch holds about 360 ml while steeping.',
+  steps:'Steps', startBrew:'Start brew ⏱', pause:'Pause', resume:'Resume', finish:'Drawdown done', cancel:'Cancel',
+  nextIn:'Next in {s}', allPoured:'All poured. Tap when the bed is dry.',
+  st_bloom:'💧 Bloom to {g} g, swirl', st_pour:'Pour to {g} g', st_swirl:'Gentle swirl, let it drain',
+  st_sbloom:'💧 Close valve, bloom to {g} g', st_spour:'Pour to {g} g, valve closed', st_open:'Open valve, let it drain', st_done:'Target finish',
+  lastTime:'Last time with this bean: {s}',
+  tasteTitle:'How did it taste?', rating:'Overall', itTasted:'It tasted…',
+  tag_sour:'🍋 Sour', tag_bitter:'☕ Bitter', tag_weak:'💧 Weak', tag_strong:'🪨 Too strong', tag_dry:'🌵 Dry', tag_muddy:'🟤 Muddy', tag_flat:'😶 Flat', tag_right:'✨ Just right',
+  totalTime:'Total brew time', vsLast:'Compared with last time', better:'Better', same:'Same', worse:'Worse', note:'Note (optional)',
+  getFix:'What should I change?', nextTime:'Next time', ifNot:'If that does not fix it',
+  apply:'Apply to next brew', applied:'Applied to your next brew', save:'Save to log', saved:'Saved to your log', pickTaste:'Pick a rating or a taste first',
+  f_grindFiner:'Grind 1 step finer', f_grindCoarser:'Grind 1 step coarser', f_hotter:'Water 2 °C hotter', f_cooler:'Water 2 °C cooler',
+  f_bloomLonger:'Bloom 15 s longer', f_tighter:'Ratio 1 step stronger', f_wider:'Ratio 1 step lighter', f_gentler:'Pour lower and gentler',
+  f_evenBloom:'Stir the bloom well, pour evenly', f_steepLonger:'Steep 30 s longer', f_steepShorter:'Steep 30 s shorter',
+  f_checkBeans:'Check the roast date', f_keep:'Keep this recipe', f_revert:'Undo the last change',
+  r_fast:'It finished in {t}, faster than the {lo} to {hi} target, so the water ran through too quickly.',
+  r_slow:'It took {t}, slower than the {lo} to {hi} target.',
+  r_sour:'Sour usually means under-extracted.', r_bitter:'Bitter usually means over-extracted.',
+  r_weak:'Weak but not sour means the ratio is too light.', r_strong:'Heavy but not bitter means the ratio is too strong.',
+  r_dry:'A dry, astringent finish often means channelling or too many fines.', r_muddy:'Muddy means fines are clogging the paper.',
+  r_flat:'Flat often means an uneven or cool extraction.', r_both:'Sour and bitter together means uneven extraction.',
+  r_good:'You liked it, so change nothing.', r_mine:'Scored 4 or more twice: saved as your recipe for this bean.',
+  r_worse:'The last change made it worse, so undo it and try the next idea.', r_iced:'Iced coffee hides sweetness, so aim for a fuller extraction.',
+  r_dark:'For darker roasts, cooler water helps before a coarser grind.', r_light:'For light roasts, hotter water helps before a finer grind.',
+  r_one:'Change one thing at a time so you learn what each change does.',
+  grinderLine:'{name}: {a} → {b} clicks',
+  addBean:'+ Add bean', brand:'Roaster / brand *', name:'Bean name *', origin:'Origin *', region:'Region / farm', variety:'Variety',
+  process:'Process *', roast:'Roast level *', roastDate:'Roast date *', notes:"Roaster's tasting notes", decaf:'Decaf', saveBean:'Save bean',
+  required:'Fill in the fields marked *', beanSaved:'Bean saved', daysSince:'{n} days since roast',
+  tooFresh:'Very fresh: expect a big bloom', stale:'Past 6 weeks: try a finer grind', peak:'In its best window',
+  useBean:'Brew this', example:'Example', libraryNote:'Your beans stay on this device. The shared bean library comes in v1.1.',
+  myBeans:'My beans', library:'Roastery library', soldOut:'Sold out',
+  fromSite:'From {s}, checked {d}. Prices and stock can change.', addToMine:'+ Add to my beans', bestFor:'Best for',
+  u_espresso:'Espresso', u_filter:'Filter', u_milk:'Milk drinks', priceFrom:'From {p} KWD', altM:'{a} m',
+  noDetails:'The roastery has not listed details for this bean yet.', prefilled:'Filled in from the roastery. Add the roast date from your bag and save.',
+  roastGuess:'Roast level is not listed, so it is estimated. Change it if your bag says otherwise.',
+  p_washed:'Washed', p_natural:'Natural', p_honey:'Honey', p_anaerobic:'Anaerobic', p_other:'Other',
+  r_l:'Light', r_ml:'Medium-light', r_m:'Medium', r_md:'Medium-dark', r_d:'Dark',
+  emptyLog:'No brews yet. Finish a brew and save the tasting to see it here.', del:'Delete', drawdownShort:'time {t}',
+  language:'Language', digits:'Numbers', western:'123', arabicDigits:'١٢٣', tempUnit:'Temperature', cupSize:'Cup size (ml)',
+  grinder:'Grinder', grinderSetting:'Current setting (clicks)', stepSize:'Clicks per step',
+  preset:'I like my coffee', bright:'Bright & fruity', balanced:'Balanced', rich:'Rich & chocolatey',
+  deviceNote:'Everything is saved on this device only.', resetData:'Reset to example data', resetDone:'Example data restored',
+  notBuilt:'Not in this prototype yet', nb1:'Login and sync between devices', nb2:'Shared bean library', nb3:'Bag photo upload', nb4:'Saving custom recipes', nb5:'Hario Switch (planned as its own page)',
+  change:'Change', pickRoastery:'Choose a roastery', pickBean:'Choose a bean', beansCount:'{n} beans', ownBeans:'My own beans', back:'← Back',
+  roastOpt:'Roast date (optional)', suggested:'Suggested for this bean: {n} clicks', useIt:'Use', estimated:'estimated', noBeanYet:'Pick a bean to start',
+  activeGrinder:'Grinder I am using', stepHelp:'Clicks per step is how far the app moves your grinder when it suggests “grind 1 step finer”. With {n}, it would take you from {a} to {b} clicks.', noOwnBeans:'No beans of your own yet. Roastery beans are in the Roastery library.',
+  c_ET:'Ethiopia', c_CO:'Colombia', c_KE:'Kenya', c_BR:'Brazil', c_YE:'Yemen', c_SA:'Saudi Arabia', c_PA:'Panama', c_GT:'Guatemala', c_CR:'Costa Rica', c_RW:'Rwanda', c_ID:'Indonesia', c_HN:'Honduras', c_PE:'Peru', c_SV:'El Salvador', c_EC:'Ecuador', c_UG:'Uganda', c_MY:'Malaysia', c_BL:'Blend', c_XX:'Other'
+},
+ar:{
+  appName:'قهوة V60', morning:'صباح الخير', evening:'مساء الخير',
+  tabBrew:'تحضير', tabBeans:'البن', tabLog:'السجل', tabMe:'الإعدادات',
+  bean:'البن', method:'طريقة التحضير', v60:'V60', switch:'سويتش', hot:'حار', iced:'مثلج',
+  startFrom:'ابدأ من', byCoffee:'وزن البن', byCups:'عدد الأكواب',
+  coffeeG:'البن (غ)', cups:'أكواب بحجم {n} مل', ratio:'النسبة', iceShare:'نسبة الثلج', dripper:'حجم القمع',
+  outCoffee:'بن', outHot:'ماء حار', outWater:'ماء', outIce:'ثلج', outBloom:'تشريب', outTemp:'الماء', outYield:'في كوبك', outGrind:'الطحن',
+  clicks:'نقرة', steepAdj:'تعديل النقع {s}',
+  warn01:'أكثر من ٢٠ غ كثير على V60 01. استخدم 02.', warn02:'أكثر من ٣٠ غ قد يفيض في V60 02.', warnSw:'السويتش يتسع لحوالي ٣٦٠ مل أثناء النقع.',
+  steps:'الخطوات', startBrew:'ابدأ التحضير ⏱', pause:'إيقاف مؤقت', resume:'استئناف', finish:'انتهت التصفية', cancel:'إلغاء',
+  nextIn:'التالي بعد {s}', allPoured:'انتهى الصب. اضغط عندما تجف القهوة.',
+  st_bloom:'💧 تشريب حتى {g} غ وحرّك', st_pour:'صب حتى {g} غ', st_swirl:'حرّك بلطف واتركه يصفّى',
+  st_sbloom:'💧 أغلق الصمام، تشريب حتى {g} غ', st_spour:'صب حتى {g} غ والصمام مغلق', st_open:'افتح الصمام واتركه يصفّى', st_done:'الانتهاء المتوقع',
+  lastTime:'آخر مرة مع هذا البن: {s}',
+  tasteTitle:'كيف كان الطعم؟', rating:'التقييم', itTasted:'كان الطعم…',
+  tag_sour:'🍋 حامض', tag_bitter:'☕ مر', tag_weak:'💧 خفيف', tag_strong:'🪨 ثقيل', tag_dry:'🌵 قابض', tag_muddy:'🟤 عكر', tag_flat:'😶 باهت', tag_right:'✨ ممتاز',
+  totalTime:'وقت التحضير الكلي', vsLast:'مقارنة بالمرة السابقة', better:'أفضل', same:'نفسه', worse:'أسوأ', note:'ملاحظة (اختياري)',
+  getFix:'ماذا أغيّر؟', nextTime:'المرة القادمة', ifNot:'إذا لم ينفع',
+  apply:'طبّق على التحضير القادم', applied:'تم التطبيق على التحضير القادم', save:'احفظ في السجل', saved:'تم الحفظ في السجل', pickTaste:'اختر تقييماً أو طعماً أولاً',
+  f_grindFiner:'اطحن أنعم بدرجة', f_grindCoarser:'اطحن أخشن بدرجة', f_hotter:'ماء أسخن بدرجتين', f_cooler:'ماء أبرد بدرجتين',
+  f_bloomLonger:'تشريب أطول ١٥ ثانية', f_tighter:'نسبة أقوى بدرجة', f_wider:'نسبة أخف بدرجة', f_gentler:'صب من مسافة أقرب وبهدوء',
+  f_evenBloom:'حرّك التشريب جيداً وصب بالتساوي', f_steepLonger:'نقع أطول ٣٠ ثانية', f_steepShorter:'نقع أقصر ٣٠ ثانية',
+  f_checkBeans:'تحقق من تاريخ التحميص', f_keep:'احتفظ بهذه الوصفة', f_revert:'تراجع عن التغيير الأخير',
+  r_fast:'انتهى في {t}، أسرع من الهدف {lo} إلى {hi}، يعني الماء مرّ بسرعة.',
+  r_slow:'استغرق {t}، أبطأ من الهدف {lo} إلى {hi}.',
+  r_sour:'الحموضة غالباً تعني استخلاصاً ناقصاً.', r_bitter:'المرارة غالباً تعني استخلاصاً زائداً.',
+  r_weak:'خفيف بدون حموضة يعني أن النسبة خفيفة.', r_strong:'ثقيل بدون مرارة يعني أن النسبة قوية.',
+  r_dry:'الطعم القابض غالباً من تسرّب الماء أو كثرة الذرات الناعمة.', r_muddy:'العكارة تعني أن الذرات الناعمة تسد الفلتر.',
+  r_flat:'الطعم الباهت غالباً من استخلاص غير متساوٍ أو ماء بارد.', r_both:'حامض ومر معاً يعني استخلاصاً غير متساوٍ.',
+  r_good:'أعجبك، لا تغيّر شيئاً.', r_mine:'حصل على ٤ أو أكثر مرتين: حُفظت كوصفتك لهذا البن.',
+  r_worse:'التغيير الأخير جعلها أسوأ، فتراجع عنه وجرّب الفكرة التالية.', r_iced:'القهوة المثلجة تخفي الحلاوة، فاستهدف استخلاصاً أكمل.',
+  r_dark:'مع التحميص الداكن، الماء الأبرد يساعد قبل الطحن الأخشن.', r_light:'مع التحميص الفاتح، الماء الأسخن يساعد قبل الطحن الأنعم.',
+  r_one:'غيّر شيئاً واحداً كل مرة لتعرف أثر كل تغيير.',
+  grinderLine:'{name}: {a} ← {b} نقرة',
+  addBean:'+ أضف بن', brand:'المحمصة *', name:'اسم البن *', origin:'المنشأ *', region:'المنطقة / المزرعة', variety:'السلالة',
+  process:'المعالجة *', roast:'درجة التحميص *', roastDate:'تاريخ التحميص *', notes:'إيحاءات النكهة من المحمصة', decaf:'منزوع الكافيين', saveBean:'احفظ البن',
+  required:'عبّئ الحقول المعلّمة بـ *', beanSaved:'تم حفظ البن', daysSince:'{n} يوم من التحميص',
+  tooFresh:'طازج جداً: توقع تشريباً قوياً', stale:'أكثر من ٦ أسابيع: جرّب طحناً أنعم', peak:'في أفضل فترة',
+  useBean:'حضّر هذا', example:'مثال', libraryNote:'البن محفوظ على هذا الجهاز. مكتبة البن المشتركة في الإصدار 1.1.',
+  myBeans:'بني', library:'مكتبة المحامص', soldOut:'نفد',
+  fromSite:'من موقع {s}، تم التحقق {d}. الأسعار والتوفر قد تتغير.', addToMine:'+ أضف إلى بني', bestFor:'مناسب لـ',
+  u_espresso:'إسبريسو', u_filter:'قهوة مقطرة', u_milk:'مشروبات الحليب', priceFrom:'من {p} د.ك', altM:'{a} م',
+  noDetails:'لم تضف المحمصة تفاصيل لهذا البن بعد.', prefilled:'تمت التعبئة من المحمصة. أضف تاريخ التحميص من الكيس واحفظ.',
+  roastGuess:'درجة التحميص غير مذكورة، فهي تقديرية. غيّرها إذا كان الكيس يذكر غير ذلك.',
+  p_washed:'مغسولة', p_natural:'مجففة طبيعياً', p_honey:'عسلية', p_anaerobic:'لاهوائية', p_other:'أخرى',
+  r_l:'فاتح', r_ml:'فاتح متوسط', r_m:'متوسط', r_md:'متوسط داكن', r_d:'داكن',
+  emptyLog:'لا يوجد تحضير بعد. أكمل تحضيراً واحفظ التقييم ليظهر هنا.', del:'حذف', drawdownShort:'الوقت {t}',
+  language:'اللغة', digits:'الأرقام', western:'123', arabicDigits:'١٢٣', tempUnit:'الحرارة', cupSize:'حجم الكوب (مل)',
+  grinder:'المطحنة', grinderSetting:'الإعداد الحالي (نقرات)', stepSize:'نقرات لكل درجة',
+  preset:'أحب قهوتي', bright:'حمضية وفاكهية', balanced:'متوازنة', rich:'غنية وشوكولاتية',
+  deviceNote:'كل شيء محفوظ على هذا الجهاز فقط.', resetData:'استرجاع بيانات المثال', resetDone:'تم استرجاع بيانات المثال',
+  notBuilt:'غير موجود في النموذج بعد', nb1:'تسجيل الدخول والمزامنة بين الأجهزة', nb2:'مكتبة البن المشتركة', nb3:'رفع صورة الكيس', nb4:'حفظ وصفات خاصة', nb5:'هاريو سويتش (صفحة مستقلة لاحقاً)',
+  change:'تغيير', pickRoastery:'اختر المحمصة', pickBean:'اختر البن', beansCount:'{n} أنواع بن', ownBeans:'بني الخاص', back:'رجوع →',
+  roastOpt:'تاريخ التحميص (اختياري)', suggested:'المقترح لهذا البن: {n} نقرة', useIt:'استخدم', estimated:'تقديري', noBeanYet:'اختر بناً للبدء',
+  activeGrinder:'المطحنة المستخدمة', stepHelp:'النقرات لكل درجة هي مقدار تغيير المطحنة عندما يقترح التطبيق «اطحن أنعم بدرجة». مع {n} تنتقل من {a} إلى {b} نقرة.', noOwnBeans:'لا يوجد بن خاص بك بعد. بن المحامص في مكتبة المحامص.',
+  c_ET:'إثيوبيا', c_CO:'كولومبيا', c_KE:'كينيا', c_BR:'البرازيل', c_YE:'اليمن', c_SA:'السعودية', c_PA:'بنما', c_GT:'غواتيمالا', c_CR:'كوستاريكا', c_RW:'رواندا', c_ID:'إندونيسيا', c_HN:'هندوراس', c_PE:'بيرو', c_SV:'السلفادور', c_EC:'الإكوادور', c_UG:'أوغندا', c_MY:'ماليزيا', c_BL:'خلطة', c_XX:'أخرى'
+}};
+const COUNTRIES=['ET','CO','KE','BR','YE','SA','PA','GT','CR','RW','ID','HN','PE','SV','EC','UG','MY','BL','XX'];
+/* Roots Roastery catalog, from rootsroastery.net product pages, refreshed 2026-10-23 */
+const ROOTS_CHECKED='2026-11-14';
+const ROOTS=[
+  {cid:'r1',name:'Brazil Diamond',origin:'BR',region:'',process:'natural',alt:'',notes:'Dark chocolate, nuts',uses:['espresso','milk'],price:'4.00'},
+  {cid:'r2',name:'Cocoa Caramel Blend',origin:'BL',blend:['BR','CO'],region:'Brazil, Colombia',process:'other',pnote:'Blend',alt:'',notes:'Chocolate, caramel',uses:['espresso','milk'],price:'4.50'},
+  {cid:'r3',name:'Ethiopia Hambella',origin:'ET',region:'Hambella',process:'natural',alt:'1950',notes:'Peach, berries, sweetness',uses:['espresso','filter','milk'],price:'5.00'},
+  {cid:'r4',name:'Black Forest Blend',origin:'BL',blend:['BR','ET','GT'],region:'Brazil, Ethiopia, Guatemala',process:'other',pnote:'Blend',alt:'',notes:'Chocolate, sweetness',uses:['espresso','milk'],price:'4.50'},
+  {cid:'r5',name:'Colombia Excelso',origin:'CO',region:'Excelso',process:'washed',alt:'1200',notes:'Caramel, sweetness, milk chocolate',uses:['espresso','milk'],price:'4.25'},
+  {cid:'r6',name:'Colombia Grape – Mont Blanco',origin:'CO',region:'Mont Blanco',process:'other',alt:'',notes:'',uses:[],price:'8.75'},
+  {cid:'r7',name:'Colombia Passion Fruit – Mont Blanco',origin:'CO',region:'Mont Blanco',process:'other',alt:'',notes:'',uses:[],price:'8.50'},
+  {cid:'r8',name:'Colombia Coconut – Mont Blanco',origin:'CO',region:'Mont Blanco',process:'other',alt:'',notes:'',uses:[],price:'8.75'},
+  {cid:'r9',name:'Salvador Akato Anaerobic',origin:'SV',region:'Akato',process:'anaerobic',alt:'1500',notes:'Blackberry, sweetness, dark chocolate',uses:['espresso','filter'],price:'5.50'},
+  {cid:'r10',name:'Ethiopia Anasora Honey 89',origin:'ET',region:'Guji – Anasora',process:'honey',alt:'1900–2100',notes:'Honey, blueberry, caramel · score 89+',uses:[],price:'6.00'},
+  {cid:'r11',name:'Finca Ecuador – Honey',origin:'EC',region:'Finca Lima',process:'honey',alt:'1700',notes:'Caramel, sweet',uses:['espresso','filter','milk'],price:'6.00'},
+  {cid:'r12',name:'Ethiopia Uraga',origin:'ET',region:'Uraga',process:'other',pnote:'Yeast',alt:'1950–2200',notes:'Sweet mango, berries, peach',uses:['espresso','filter','milk'],price:'5.75'},
+  {cid:'r13',name:'Ethiopia Guji Shakiso',origin:'ET',region:'Guji – Shakiso',process:'natural',alt:'1900–2100',notes:'Strawberry, cherry, chocolate',uses:['espresso','filter','milk'],price:'5.25'},
+  {cid:'r14',name:'Ethiopia Chelichelle – Slow Dry',origin:'ET',region:'Yirgacheffe – Chelichelle',process:'other',pnote:'Slow dry',alt:'',notes:'',uses:[],price:'5.25'},
+  {cid:'r15',name:'Yemen Atarah Anaerobic',origin:'YE',region:'Haraz – Atara',process:'anaerobic',alt:'',notes:'Watermelon, berries',uses:['filter'],price:'7.00'},
+  {cid:'r16',name:'Colombia Palladas Natural',origin:'CO',region:'',process:'natural',alt:'',notes:'',uses:[],price:'5.50'},
+  {cid:'r17',name:'Salvador Ruby',origin:'SV',region:'',process:'natural',alt:'',notes:'',uses:[],price:'5.50'},
+  {cid:'r18',name:'Colombia Laplata',origin:'CO',region:'La Plata',process:'natural',alt:'1700',notes:'Blackberry, apple, sweetness',uses:['filter'],price:'5.50'},
+  {cid:'r19',name:'Colombia Cauca Natural',origin:'CO',region:'Cauca',process:'natural',alt:'1950',notes:'Fruity, sweetness, guava',uses:['espresso','filter'],price:'5.50'},
+  {cid:'r20',name:'Ethiopia Sidamo Anaerobic',origin:'ET',region:'Sidamo',process:'anaerobic',alt:'2000–2300',notes:'Blackberry, fruity, sweetness',uses:['espresso','filter'],price:'5.75'},
+  {cid:'r21',name:'Colombia Sierra Nevada',origin:'CO',region:'Sierra Nevada',process:'natural',alt:'1400–1700',notes:'Dried fruit, sweetness, apricot',uses:['espresso','filter'],price:'5.50'},
+  {cid:'r22',name:'Colombia Decaf – Tumbaga Sugarcane',origin:'CO',region:'Tumbaga',process:'washed',decaf:true,alt:'1400–2100',notes:'Chocolate, brown sugar, sweetness',uses:['espresso','filter'],price:'5.00'},
+  {cid:'r23',name:'Yemen Anas Anaerobic',origin:'YE',region:'Haraz – Anas',process:'anaerobic',alt:'',notes:'Mango, apple, chocolate',uses:['filter'],price:'9.50'},
+  {cid:'r24',name:'Salvador Divisadero',origin:'SV',region:'Divisadero',process:'washed',alt:'',notes:'Chocolate, caramel, sweetness',uses:['espresso','milk'],price:'4.25'},
+  {cid:'r25',name:'Ethiopia Lachu 89',origin:'ET',region:'Lachu',process:'natural',alt:'1900–2100',notes:'Honey, blueberry, caramel · score 89',uses:['espresso','filter'],price:'5.75'}
+];
+function roastGuess(c){return c.uses.includes('filter')?'ml':(c.uses.length?'md':'m');}
+/* Jebla Coffee Roastry, 250 g bags, from jeblacoffeeroasters.com/collections/omni-roast-1 on 2026-10-23 */
+const JEBLA=[
+  {cid:'j1',name:'Romario',origin:'BR',region:'',process:'natural',alt:'',notes:'Caramel, chocolate, nuts · SCA 83',uses:['espresso','filter','milk'],price:'3.750',soldOut:true},
+  {cid:'j2',name:'KitKat',origin:'BR',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Milk chocolate, wafer, hazelnut, caramel · SCA 87',uses:['espresso','filter','milk'],price:'5.000',soldOut:true},
+  {cid:'j3',name:'Derwaza Blend',origin:'BL',blend:['ET','HN','BR'],region:'Ethiopia, Honduras, Brazil',process:'natural',alt:'',notes:'Dark chocolate, almond, blackberry, caramel · SCA 84',uses:['espresso','filter','milk'],price:'4.750'},
+  {cid:'j4',name:'Decaf Colombia',origin:'CO',region:'',process:'other',pnote:'Decaf',decaf:true,alt:'',notes:'',uses:[],price:'4.500',gone:true},
+  {cid:'j5',name:'Salsa',origin:'CO',region:'',process:'washed',alt:'',notes:'Red apple, flowers, peach, caramel, lemon · SCA 83–85',uses:['filter'],price:'4.750'},
+  {cid:'j6',name:'Gutete',origin:'ET',region:'Gutete',process:'natural',alt:'1950–2300',notes:'Cherry, caramel, forest cake, black plum, blueberry, watermelon',uses:[],price:'5.250',soldOut:true},
+  {cid:'j7',name:'Hambella',origin:'ET',region:'Hambella',process:'natural',alt:'',notes:'Cherry, red apple, peach, caramel · SCA 86.5',uses:['filter'],price:'5.750',soldOut:true},
+  {cid:'j8',name:'Qayel Ali (premium)',origin:'YE',region:'',process:'other',pnote:'Diwani',alt:'',notes:'Red fruits, spices, caramel, raisins · SCA 90+',uses:['filter'],price:'11.500',soldOut:true},
+  {cid:'j9',name:'La Rosa',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Floral, fruity, bright · SCA 85',uses:['espresso','filter'],price:'5.750',gone:true},
+  {cid:'j10',name:'Fresa',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Strawberry, red berries, brown sugar · SCA 86',uses:['filter'],price:'6.500'},
+  {cid:'j11',name:'Monte Roja',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Grape, floral, tutti frutti · SCA 87',uses:['filter'],price:'6.750',soldOut:true},
+  {cid:'j12',name:'Nala',origin:'UG',region:'',process:'natural',alt:'',notes:'Berries, dark chocolate, brown sugar, spices · SCA 85',uses:['espresso','filter','milk'],price:'5.500'},
+  {cid:'j13',name:'Zorro',origin:'CO',region:'',process:'natural',alt:'1710',notes:'Mango, red berries, cherry, chocolate · SCA 88',uses:['espresso','filter'],price:'7.500',soldOut:true},
+  {cid:'j14',name:'Duraz',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Peach, strawberry, cantaloupe · SCA 88',uses:[],price:'6.500',soldOut:true}
+];
+/* 48 East Coffee Roasters, filter coffee, from 48e.co/collections/filter-coffee on 2026-10-23. CM = carbonic maceration */
+const EAST48=[
+  {cid:'e1',name:'Bani Ismail',origin:'YE',region:'Bani Ismail',process:'anaerobic',alt:'1850–2250',notes:'Mixed berries, dates, cloves',uses:['filter'],price:'11.000'},
+  {cid:'e2',name:'Maguta Amber H3',origin:'KE',region:'Maguta',process:'anaerobic',pnote:'CM natural',alt:'1800',notes:'Tropical, plum, raspberry',uses:['filter'],price:'7.750',gone:true},
+  {cid:'e3',name:'Freddy Mellado',origin:'PE',region:'',process:'washed',alt:'1600',notes:'Almond, toffee, stone fruits',uses:['filter'],price:'5.000',gone:true},
+  {cid:'e4',name:'Decaf Colombia',origin:'CO',region:'',process:'washed',decaf:true,alt:'1600–1750',notes:'Caramel, orange',uses:['espresso','filter'],price:'6.000'},
+  {cid:'e5',name:'Laurina',origin:'BR',region:'',process:'natural',alt:'1200',notes:'Sugarcane, green apple, pear',uses:['espresso','filter'],price:'6.000',size:100},
+  {cid:'e6',name:'Mameria Native Community',origin:'PE',region:'Mameria',process:'washed',alt:'2100',notes:'Orange marmalade, floral, stone fruits',uses:['filter'],price:'5.500'},
+  {cid:'e7',name:'Sidra Cusco',origin:'PE',region:'Cusco',process:'washed',alt:'1800–1900',notes:'Mango, pineapple, raisins',uses:['filter'],price:'6.500',size:100},
+  {cid:'e8',name:'La Salvaje Geisha',origin:'HN',region:'',process:'washed',alt:'1750–1820',notes:'Jasmine, white florals, berries',uses:['filter'],price:'6.500',size:100,gone:true},
+  {cid:'e9',name:'Tropical Canopy',origin:'ET',region:'',process:'natural',alt:'1800–2150',notes:'Raspberry, yellow plum, chamomile, chocolate',uses:['filter'],price:'6.000'},
+  {cid:'e10',name:'La Papaya Sidra',origin:'EC',region:'',process:'natural',alt:'1800–2100',notes:'Brown sugar, plum, dried figs',uses:['filter'],price:'7.000',size:100},
+  {cid:'e11',name:'Thageini Indigo',origin:'KE',region:'Thageini',process:'anaerobic',pnote:'CM natural',alt:'1650–2050',notes:'Mixed berries, grapes, chocolate',uses:['filter'],price:'7.000',gone:true},
+  {cid:'e12',name:'Maguta Diamond',origin:'KE',region:'Maguta',process:'anaerobic',pnote:'CM washed',alt:'1650–1800',notes:'Lemon, honey, white flowers',uses:['filter'],price:'7.500',gone:true},
+  {cid:'e13',name:'Maragogipe Valle Sagrado',origin:'PE',region:'Valle Sagrado',process:'washed',alt:'1600–1800',notes:'Pineapple, peach, floral',uses:['filter'],price:'8.000'},
+  {cid:'e14',name:'Justina Ortiz',origin:'PE',region:'',process:'washed',alt:'2000',notes:'Orange, Earl Grey, caramel',uses:['filter'],price:'6.000'},
+  {cid:'e15',name:'Amederaro Nitro 2126',origin:'ET',region:'Amederaro',process:'natural',pnote:'Nitro natural',alt:'1800–2150',notes:'Cherry, plum, raspberry, rose water',uses:['filter'],price:'8.000'},
+  {cid:'e16',name:'Liberica Anaerobic',origin:'MY',region:'',process:'anaerobic',alt:'0–20',notes:'Cedar, leather, vanilla tobacco · Liberica',uses:['filter'],price:'6.000',size:100},
+  {cid:'e17',name:'AMA Blush',origin:'BR',region:'',process:'natural',pnote:'Nitro natural',alt:'1100–1400',notes:'Peach, mandarin, white tea · Geisha',uses:['filter'],price:'6.000'}
+];
+/* Roastery logos Ibrahim sent, cropped to 144px */
+const LOGOS={jebla:'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACQAJADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7LooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoorndc8QTrey6Xo0cEt1Coa6uJ2xb2ankFyOSxHRBz3JAoKjFydkdFRXnmrgRSrDeX3iXX9QdiPs1i5t4lGAd2I8ALyACSTz9atCxtbbVf7Ps9U8S6TdkAxGSR7iCT5ck/PuXA6Ekrzx6Urmnslbf8Ar+vI7miua0jXbuC6t9P10QZuv+PK/twRBdcZ24P3HI5AyQex7V0tO5nKLjuFFFFBIUUUUAFFFFABRRRQAUUUUAFFFFAGX4r1J9J0C7voUDzqoWBD0aViFQH23EVzX/CP3FlbwWl66to9ujXN86uTNqFyx7gY43ZyCcNlR0BFavxA3iw019wEKataGbPTZ5o/qVrR8QhvstuwYKq3cJYlcgfOMEjI4ziperNovlirdTnv+Ek8OSXtxa6v4it4bmAlJrOK4Ma2+DjaxXBJGeSTj0Aragt4JrUXGhaiJUIwEaczwSD0OSSM+oP4HpWX4i0aK4tbf7TdyJuuFDugAA2CU5wc9Sec+grzHxV9ntPH6eF9P0+xtrmXS21JdSgeS0ljIbHlnyCu7tgmk20b06Uavwu39fI9Q0/w5ZXWiXGnxSzRabOGH2SQbmtZQf4HzldrDgdBjjjFafg6/uL/AERPt3/H7byPbXJxjMkbFS344DfjUXguSSbTJZpSS7um9sffcRIHYfVgah8GYOoeJHXPltq7bT2JEMQbH/AgfxpmErtST6HSUUUVRiFFFFABRRRQAUUUUAFFFFABRRRQBn+I9NXV9Du9OZzGZoyEkHVHHKt+DAH8Kp+HdQTXNHktr+JUvYc2+oWxPKSY5/4CfvKe4IrcrF1vQvtd4mqaddNp+qRpsE6LuWRM52SJ0dfyI7EUmXFq3KzI1PRZbi5ghub3VruOxl81PsV6sb5IIHmrwTwzdDg5zgU668N6fqOsLq40Mw6gsH2f7deSbnjiznaqhjn8cD69KZdtrKQ3MOo+F5ZmnB8250m7X94SoXO1ypBwAOc4xVa/ttR1h7VY/C98Et7lrhP7SvUjhDs24FlQs7Kp5C9PyFLQ3XN3/H/gnQ6ldWXhfw8iQRF9gENrbqcvPKfuqPUk8k/UmpfCmmyaVokNvcOsl0xaa5dejyuSzn6ZJA9gKr6PoMseoDV9ZvP7Q1MKVjYJsitlPVYk7Z7scsfYcVu00YyaSstQooopmYUUUUAFFFFABRRRQAUUUUAUdR1jSNOlWLUNUsbSRl3Ks9wkZI9QCRxVd/E3hxApbX9KUONyk3kY3DOMjnnkH8q85/aI8K/C7XbWwvviDrSaNNbbltrhJ1WZ0JyyBSGLjIzwOD9a8z8T2n7MOt6Roumf8JTLYrpEJt4ZbaOUSSRlixDloiGJYs2cA5Y/Ss5TaZ6NDCQqwUve87Ruj6givrKWw+3x3lu9ptL+esqmPaOp3Zxjg81Ri8TeHJZEii1/Snd2Cqq3kZLE9ABnk1wk934Ru/2dNaj8Dzxz6Da6Ld2tsUVgPkjYEHcASc5yT1Jr4l+HkaDx14cPlpn+1LX+Ef8APVKmdXlt5m+CytYmM25NcvkfpXRWJ4x8V+H/AAdpC6t4k1KPT7JphCJXRmBdskDCgnsayfB3xQ8B+L9XOk+HPEUGoXoiaYxJFIp2AgE5ZQO4/Otbq9jy1RqOPOou3e2h2NFcv42+IXgzwXLBD4n8QWunTXCloonDM7KOM7VBIHueK5z/AIX18JP+hztf/Aab/wCIpcyXUuGGrTXNGDa9Gel0V5p/wvr4Sf8AQ52v/gNN/wDEUf8AC+vhJ/0Odr/4DTf/ABFHPHuV9TxH/Pt/cz0uisbwd4p0Hxfo/wDa/hzUU1Cx8xovNRGUb16jDAHjIrZqk7nPKLi7SVmFFFFAgooooAKwviB4ig8JeC9W8SXKGSPT7V5tmcb2HCrn3YgfjW7Xl/7VW8/AjxGEBJKwZAGePPjqZOybNsNBVK0IPZtHxR4j1vxB448VSanqck+o6tfShERFLHJOFijUdFHQKP51T1/RtV0DVH0vW9PuNPvo1VngnXa6hhkEj3FdX8Ao3Hxo8JExuANSTqp9Grof2uI3Pxz1MqjkfZLXkKT/AMsq4OW8eZn3ar8mIjh4rTlv+Nj1v4Kf8mga7/166p/J6+Yvh7/yPXhz/sKWv/o1K0dI8feNtI8KzeFtO1i6t9GnWVJbVYFKsJM7xkrnnJ71zlhNd2F7b3toJYri3kWWJwhJR1IKnkdiBTlO6XkZ4bCypSqtte+7o+yP21z/AMWet+f+YzB/6DJXjn7Fp/4vDLk/8wmf/wBDjrgvF/xG8eeLtKXS/Eet3eoWayrMIngRQHGQD8qg9zWV4Q8R+IvCWqnVPDl5Pp94YmhMqRBjsJBIwwI7D8qqVROopHPQy+pTwUsO2ru/oew/tQ+CvGmu/GPUL/SPC+tajZG1tkjnt7V5IziPkAjjgk/jXmP/AArH4j/9CL4i/wDAF/8ACtv/AIXd8W/+htvv/AWL/wCIpP8Ahd3xb/6G2/8A/AWL/wCIpScG76mtCGMo0401y6K27/yMX/hWPxH/AOhF8Rf+AL/4VzmsaZqWjajLpur2NzYXsWPMguEKOmRkZB6cEGu9/wCF2/Fv/obb/wD8BYv/AIiuL8S6xrfiXW59a1y4nvb+42+bM8eC21Qo4UAcAAVEuXodVGWI5v3vLbyv+p9h/sXf8kZ/7ilz/wCy17ZXif7F6svwawylT/alzwRj+7Xtld9P4EfEZj/vVT1YUUUVZxBRRRQAUjqrqVZQwPYjNLUV3c29nbSXN1PHBBGu55JGCqo9ST0oAVYIVYMsUYI6EKKV4Ynbc8aMfUqDTY7m3ljEkc0boyCQMrAgqejfT3pXmhQ4eVFPA5YdzgfmeKB6ifZ4P+eMf/fAo+zwf88Y/wDvgU2a8tIRma6gj4LfNIBwCAT+BIH4ipHljRGd3VVUEsScAAdSaAuznPiNH4kj8IXv/CE2NjNrrhUtvtO1Y0ywDOc8EgZIB6nFct8E7f4pwrqFr8TbfTbhRsezuoWiLk8hkYIAMdCDj1FejWmoWN3apdWt5bzwOCVkjkDKwHXBHpS21/Y3Wfs15bzYCk+XIG4YZU8HuOR6iptrc3VZxpunyrXr1+8k+zwf88Y/++RUdxCiwSNFaxSSBSUQgDcccDPanz3FvBbyXE08ccMQLSSOwCoB1JPbFNtby0uoEntrmGaKRSyOjhgwHBIIqjHXc8Y+HsXx7Tx5FceMLPQ5PD1w7Ce3heHNqpBKmMqNxwcDknIz3r2kW8PeGP8A74FE1zbQxGWW4ijjC7izOAAPXPpTzIgON69dvXv6VMY2Na1Z1XflS9NBURUGEUKPQDFLSIyuu5WDA9wc0tUYBRRRQAUUUUAFVdX0+31TTbjT7tWaCdCjgHBwatUUDTs7o5dvAmgubgSJcyJPYJYFWnPES4xg9SflHJJ6fWrsPhbSIbl544ZAzC3BHmnH7gqY/wAti59ce5zt0UrIp1Jvqc5F4K0GOxms/s8rxzecX3zMxzKyM/J940Ptirdn4d063g1aAo80erTSS3Su3B3rtKjHRcfqSeprYoosgdST3Zgt4T0l3spJ/tVxLZrKsck1wzsfMBDbievBNNbwdoBMGLMr5NxBcptkI+eGMRx/UBQBiugoosg9pPuYtt4X0e30bUNIjt3FnqLyvcoZGJYyfe56ioE8G6FHJC8VtJF5NvLbxBJmARJCxYDn/bbHpn2GOhoosg9pPucwvgXw8LX7N9mlaP8As/8As/BmY5h37wD6kNyD2q7a+F9Gt7+a9jtSZpr37cxZyw87YybgD7M30z7CtqiiyB1JvqUPD+kWWh6VFpmno6W0RYorOWxuYseT2yelX6KKZLbbuwooooEFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf/9k=',east48:'data:image/jpeg;base64,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',roots:'data:image/jpeg;base64,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'};
+function logo(r,sz){return LOGOS[r.id]?'<img src="'+LOGOS[r.id]+'" alt="" width="'+sz+'" height="'+sz+'" style="flex:none;width:'+sz+'px;height:'+sz+'px;border-radius:50%;object-fit:cover;border:1.5px solid var(--line)">':'';}
+const ROASTERIES=[
+  {id:'roots',short:{en:'Roots',ar:'روتس'},brand:'Roots Roastery',name:{en:'Roots Roastery',ar:'محمصة روتس'},place:{en:'Shuwaikh, Kuwait',ar:'الشويخ، الكويت'},mark:'R',site:'rootsroastery.net',url:'https://rootsroastery.net/en/product-category/coffee-beans/',checked:ROOTS_CHECKED,items:ROOTS},
+  {id:'jebla',short:{en:'Jebla',ar:'جبلة'},brand:'Jebla Coffee Roastry',name:{en:'Jebla Coffee Roastry',ar:'محمصة جبلة'},place:{en:'Kuwait',ar:'الكويت'},mark:'J',site:'jeblacoffeeroasters.com',url:'https://jeblacoffeeroasters.com/collections/omni-roast-1',checked:'2026-11-14',items:JEBLA},
+  {id:'east48',short:{en:'48 East',ar:'٤٨ إيست'},brand:'48 East Coffee Roasters',name:{en:'48 East Coffee Roasters',ar:'محمصة ٤٨ إيست'},place:{en:'Kuwait',ar:'الكويت'},mark:'48',site:'48e.co',url:'https://48e.co/collections/filter-coffee',checked:'2026-11-14',items:EAST48}
+];
+function roasteryOf(cid){return ROASTERIES.find(r=>r.items.some(x=>x.cid===cid));}
+function catItem(cid){const r=roasteryOf(cid);return r?r.items.find(x=>x.cid===cid):null;}
+function live(r){return r.items.filter(c=>!c.gone);}
+function rn(r){return r.name[st.lang]||r.name.en;}
+const PROCESSES=['washed','natural','honey','anaerobic','other'];
+const ROASTS=['l','ml','m','md','d'];
+const BASE_TEMP={l:94,ml:93,m:92,md:90,d:88};
+const TAGS=['sour','bitter','weak','strong','dry','muddy','flat','right'];
+const FACES=['😖','😕','😐','🙂','😍'];
+
+/* ---------- state ---------- */
+const KEY='v60proto.v2';
+function today(offset){const d=new Date();d.setDate(d.getDate()-(offset||0));return d.toISOString().slice(0,10);}
+function examples(){
+  return {
+    lang:'en', digits:'western', tempUnit:'C', cupSize:200, preset:'balanced',
+    /* base = suggested V60 setting for a medium-light roast; step = clicks per adjustment */
+    grinders:[
+      {id:'qair',name:'1Zpresso Q Air',clicks:55,base:55,step:3},
+      {id:'esp',name:'Baratza Encore ESP',clicks:22,base:22,step:1}
+    ],
+    grinderId:'qair',
+    beans:[], brews:[], roastDates:{}, beansView:'lib',
+    recipe:{beanId:'r3',method:'v60',mode:'hot',startFrom:'coffee',coffee:15,cups:1,ratio:16,iceShare:40,dripper:'02',tempAdj:0,steepAdj:0},
+    tab:'brew'
+  };
+}
+let st;
+try{st=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){st=null;}
+if(!st||!st.recipe)st=examples();
+let timer={on:false,paused:false,start:0,acc:0,iv:null};
+let tasting=null;   // {rating,tags,time,vs,note,fix,applied}
+let beanForm=null;  // {open,err,draft}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+
+/* ---------- helpers ---------- */
+function t(k,v){let s=(S[st.lang]&&S[st.lang][k])||S.en[k]||k;if(v)for(const n in v)s=s.split('{'+n+'}').join(v[n]);return s;}
+function digits(s){s=String(s);return st.digits==='arabic'?s.replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]):s;}
+function n(x){return digits(Number.isInteger(x)?x:Math.round(x*10)/10);}
+function mmss(sec){sec=Math.max(0,Math.round(sec));return digits(Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'));}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function temp(c){return st.tempUnit==='F'?digits(Math.round(c*9/5+32))+' °F':digits(c)+' °C';}
+function bean(id){
+  const own=st.beans.find(b=>b.id===id);if(own)return own;
+  const c=catItem(id);if(!c)return null;
+  return {id:c.cid,cid:c.cid,brand:roasteryOf(id).brand,decaf:!!c.decaf,name:c.name,origin:c.origin,region:c.region,process:c.process,pnote:c.pnote,roast:roastGuess(c),roastEst:true,roastDate:(st.roastDates||{})[c.cid]||'',notes:c.notes,alt:c.alt,uses:c.uses,price:c.price,blend:c.blend};
+}
+function G(){return st.grinders.find(x=>x.id===st.grinderId)||st.grinders[0];}
+function suggestClicks(){const g=G(),b=bean(st.recipe.beanId);let off={l:-1,ml:0,m:1,md:2,d:3}[b?b.roast:'m']||0;if(st.recipe.mode==='iced')off-=1;return g.base+off*g.step;}
+/* Flags drawn as SVG, because some phones show flag emoji as letters ("ET") */
+function flag(code,w){
+  w=w||24;const h=Math.round(w*2/3);
+  const H=(c)=>c.map((col,i)=>'<rect x="0" y="'+(20/c.length*i)+'" width="30" height="'+(20/c.length+0.1)+'" fill="'+col+'"/>').join('');
+  const V=(c)=>c.map((col,i)=>'<rect x="'+(10*i)+'" y="0" width="10.1" height="20" fill="'+col+'"/>').join('');
+  const F={
+    ET:H(['#078930','#FCDD09','#DA121A'])+'<circle cx="15" cy="10" r="4.2" fill="#0F47AF"/><path d="M15 6.6l.9 2.6h2.7l-2.2 1.6.8 2.6-2.2-1.6-2.2 1.6.8-2.6-2.2-1.6h2.7z" fill="#FCDD09"/>',
+    CO:'<rect width="30" height="10" fill="#FCD116"/><rect y="10" width="30" height="5" fill="#003893"/><rect y="15" width="30" height="5" fill="#CE1126"/>',
+    EC:'<rect width="30" height="10" fill="#FFDD00"/><rect y="10" width="30" height="5" fill="#034EA2"/><rect y="15" width="30" height="5" fill="#ED1C24"/><circle cx="15" cy="10" r="2.6" fill="#8C6A3C"/>',
+    BR:'<rect width="30" height="20" fill="#009B3A"/><path d="M15 2.5L27 10 15 17.5 3 10z" fill="#FEDF00"/><circle cx="15" cy="10" r="4" fill="#002776"/>',
+    SV:H(['#0F47AF','#FFFFFF','#0F47AF'])+'<circle cx="15" cy="10" r="1.8" fill="#C9A227"/>',
+    YE:H(['#CE1126','#FFFFFF','#000000']),
+    GT:V(['#4997D0','#FFFFFF','#4997D0'])+'<circle cx="15" cy="10" r="2" fill="#6AA84F"/>',
+    KE:H(['#000000','#BB0000','#006600'])+'<rect y="6.2" width="30" height="0.9" fill="#fff"/><rect y="12.9" width="30" height="0.9" fill="#fff"/><ellipse cx="15" cy="10" rx="2.6" ry="5" fill="#BB0000" stroke="#000" stroke-width=".6"/>',
+    SA:'<rect width="30" height="20" fill="#006C35"/><rect x="8" y="7" width="14" height="2.4" rx="1" fill="#fff"/><rect x="9" y="12" width="12" height="1" fill="#fff"/>',
+    PA:'<rect width="30" height="20" fill="#fff"/><rect x="15" width="15" height="10" fill="#DA121A"/><rect y="10" width="15" height="10" fill="#072357"/><circle cx="7.5" cy="5" r="2" fill="#072357"/><circle cx="22.5" cy="15" r="2" fill="#DA121A"/>',
+    CR:H(['#002B7F','#FFFFFF','#CE1126','#CE1126','#FFFFFF','#002B7F']),
+    RW:'<rect width="30" height="20" fill="#00A1DE"/><rect y="10" width="30" height="5" fill="#FAD201"/><rect y="15" width="30" height="5" fill="#20603D"/><circle cx="25" cy="5" r="2.2" fill="#E5BE01"/>',
+    ID:H(['#CE1126','#FFFFFF']),
+    MY:H(['#CC0001','#FFFFFF','#CC0001','#FFFFFF','#CC0001','#FFFFFF','#CC0001','#FFFFFF','#CC0001','#FFFFFF','#CC0001','#FFFFFF','#CC0001','#FFFFFF'])+'<rect width="15" height="11.5" fill="#010066"/><circle cx="6" cy="5.75" r="3.6" fill="#FC0"/><circle cx="7.1" cy="5.75" r="3" fill="#010066"/><circle cx="11" cy="5.75" r="1.6" fill="#FC0"/>',
+    UG:H(['#000000','#FCDC04','#D90000','#000000','#FCDC04','#D90000'])+'<circle cx="15" cy="10" r="4" fill="#fff"/><circle cx="15" cy="10" r="1.8" fill="#9CA69C"/>',
+    HN:H(['#0073CF','#FFFFFF','#0073CF'])+'<circle cx="15" cy="10" r=".9" fill="#0073CF"/><circle cx="11" cy="8.6" r=".9" fill="#0073CF"/><circle cx="19" cy="8.6" r=".9" fill="#0073CF"/><circle cx="11" cy="11.4" r=".9" fill="#0073CF"/><circle cx="19" cy="11.4" r=".9" fill="#0073CF"/>',
+    PE:V(['#D91023','#FFFFFF','#D91023'])
+  };
+  if(!F[code])return '<span style="font-size:'+Math.round(w*0.8)+'px;line-height:1">☕</span>';
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 30 20" style="display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(255,255,255,.25)" aria-hidden="true">'+F[code]+'</svg>';
+}
+/* Process badge: colour + icon sit on the flag tile's corner */
+const PCOL={washed:'#9FD0F0',natural:'#E3B35C',honey:'#F2C14E',anaerobic:'#C98BB9',other:'#A7B8C8',blend:'#D29B6C'};
+const PICON={washed:'💧',natural:'☀️',honey:'🍯',anaerobic:'🧪',other:'✨',blend:'🔀'};
+function pkind(b){return b.blend?'blend':(PICON[b.process]?b.process:'other');}
+function thumb(b,size){
+  const s=size||48,k=pkind(b),many=b.blend&&b.blend.length;
+  const fl=many?'<span style="display:flex;gap:2px">'+b.blend.map(c=>flag(c,Math.round(s*(b.blend.length>2?0.27:0.38)))).join('')+'</span>':flag(b.origin,Math.round(s*0.68)),fs=Math.round(s*0.5),bs=Math.round(s*0.52);
+  return '<span aria-hidden="true" style="position:relative;flex:none;width:'+s+'px;height:'+s+'px;border-radius:'+Math.round(s/4)+'px;background:var(--card2);border:1.5px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:'+fs+'px;line-height:1;margin-inline-end:4px;margin-bottom:4px">'+fl+
+    '<span style="position:absolute;inset-inline-end:-6px;bottom:-6px;width:'+bs+'px;height:'+bs+'px;border-radius:50%;background:'+PCOL[k]+';border:2px solid var(--bg);display:inline-flex;align-items:center;justify-content:center;font-size:'+Math.round(bs*0.62)+'px">'+PICON[k]+'</span></span>';
+}
+function legend(){return '<div class="muted" style="font-size:12px">💧 '+t('p_washed')+' · ☀️ '+t('p_natural')+' · 🍯 '+t('p_honey')+' · 🧪 '+t('p_anaerobic')+' · 🔀 '+t('c_BL')+' · ✨ '+t('p_other')+'</div>';}
+let picker=null; // null | 'roasteries' | 'roots' | 'own'
+function beanLabel(b){return b?esc(b.name)+' · '+t('c_'+b.origin):'—';}
+function daysSince(d){return Math.floor((Date.now()-new Date(d+'T00:00:00').getTime())/864e5);}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>{el.hidden=true;},2200);}
+
+/* ---------- brewing math ---------- */
+function calc(){
+  const r=st.recipe,R=Number(r.ratio)||16;
+  let C=Number(r.coffee)||0;
+  const W=Math.round(C*R),s=r.mode==='iced'?(Number(r.iceShare)||40)/100:0;
+  const H=Math.round(W*(1-s)),I=W-H,B=Math.round(3*C),Y=Math.round(W-2*C);
+  const b=bean(r.beanId);let T=BASE_TEMP[b?b.roast:'ml'];
+  if(r.mode==='iced')T+=2; if(st.preset==='bright')T+=1; if(st.preset==='rich')T-=1;
+  T=Math.min(96,Math.max(84,T+(r.tempAdj||0)));
+  const warn=r.method==='switch'?(H>360?t('warnSw'):''):(r.dripper==='01'&&C>20?t('warn01'):(C>30?t('warn02'):''));
+  let steps;
+  if(r.method==='v60'){
+    steps=[{at:0,k:'st_bloom',g:B},{at:45,k:'st_pour',g:Math.round(H*.6)},{at:75,k:'st_pour',g:H},{at:105,k:'st_swirl'},{at:180,k:'st_done'}];
+  }else{
+    const open=120+(r.steepAdj||0);
+    steps=[{at:0,k:'st_sbloom',g:B},{at:30,k:'st_spour',g:H},{at:open,k:'st_open'},{at:open+60,k:'st_done'}];
+  }
+  return {C,W,H,I,B,Y,T,warn,steps};
+}
+function target(){const r=st.recipe;if(r.method==='switch')return [150+(r.steepAdj||0),240+(r.steepAdj||0)];return r.mode==='iced'?[150,180]:[165,210];}
+
+/* ---------- adjustment engine ---------- */
+function suggest(ts){
+  const r=st.recipe,b=bean(r.beanId),roast=b?b.roast:'m',tags=ts.tags,has=x=>tags.includes(x);
+  const [lo,hi]=target(),fast=ts.time<lo,slow=ts.time>hi,sw=r.method==='switch';
+  const reasons=[];const tinfo={t:mmss(ts.time),lo:mmss(lo),hi:mmss(hi)};
+  const prev=lastBrew(r.beanId);
+  if(ts.vs==='worse'&&prev&&prev.fix&&prev.fix.primary!=='keep'&&prev.fix.primary!=='revert'){
+    reasons.push(t('r_worse'));return {primary:'revert',second:prev.fix.second,undo:prev.fix.primary,reasons};
+  }
+  if(has('right')||(tags.length===0&&ts.rating>=4)){
+    reasons.push(t('r_good'));
+    const good=st.brews.filter(x=>x.beanId===r.beanId&&x.rating>=4).length+(ts.rating>=4?1:0);
+    if(good>=2)reasons.push(t('r_mine'));
+    return {primary:'keep',second:null,reasons};
+  }
+  let p,s2;
+  if(has('sour')&&has('bitter')){p='evenBloom';s2='gentler';reasons.push(t('r_both'));}
+  else if(has('sour')){
+    reasons.push(t('r_sour'));
+    if(fast){reasons.push(t('r_fast',tinfo));p='grindFiner';s2='hotter';}
+    else if(sw){p='steepLonger';s2='grindFiner';}
+    else if(r.mode==='iced'){reasons.push(t('r_iced'));p='grindFiner';s2='hotter';}
+    else if(roast==='l'||roast==='ml'){reasons.push(t('r_light'));p='hotter';s2='grindFiner';}
+    else{p='grindFiner';s2='bloomLonger';}
+  }
+  else if(has('bitter')){
+    reasons.push(t('r_bitter'));
+    if(slow){reasons.push(t('r_slow',tinfo));p='grindCoarser';s2='cooler';}
+    else if(sw){p='steepShorter';s2='grindCoarser';}
+    else if(roast==='md'||roast==='d'){reasons.push(t('r_dark'));p='cooler';s2='grindCoarser';}
+    else{p='grindCoarser';s2='cooler';}
+  }
+  else if(has('dry')){reasons.push(t('r_dry'));if(slow){reasons.push(t('r_slow',tinfo));p='grindCoarser';s2='gentler';}else{p='gentler';s2='grindCoarser';}}
+  else if(has('muddy')){reasons.push(t('r_muddy'));p='grindCoarser';s2='gentler';}
+  else if(has('flat')){reasons.push(t('r_flat'));if(fast){reasons.push(t('r_fast',tinfo));p='grindFiner';s2='hotter';}else{p='hotter';s2='checkBeans';}}
+  else if(has('weak')){reasons.push(t('r_weak'));if(fast){reasons.push(t('r_fast',tinfo));p='grindFiner';s2='tighter';}else{p='tighter';s2='bloomLonger';}}
+  else if(has('strong')){reasons.push(t('r_strong'));if(slow){reasons.push(t('r_slow',tinfo));p='grindCoarser';s2='wider';}else{p='wider';s2='gentler';}}
+  else if(fast){reasons.push(t('r_fast',tinfo));p='grindFiner';s2='hotter';}
+  else if(slow){reasons.push(t('r_slow',tinfo));p='grindCoarser';s2='cooler';}
+  else{p='keep';s2=null;reasons.push(t('r_good'));}
+  if(p!=='keep')reasons.push(t('r_one'));
+  return {primary:p,second:s2,reasons};
+}
+function grinderAfter(k){const g=G();if(k==='grindFiner')return g.clicks-g.step;if(k==='grindCoarser')return g.clicks+g.step;return null;}
+function applyFix(k,undo){
+  const r=st.recipe,g=G();
+  const act=(key,sign)=>{
+    if(key==='grindFiner')g.clicks=Math.max(1,g.clicks-sign*g.step);
+    if(key==='grindCoarser')g.clicks+=sign*g.step;
+    if(key==='hotter')r.tempAdj=(r.tempAdj||0)+2*sign;
+    if(key==='cooler')r.tempAdj=(r.tempAdj||0)-2*sign;
+    if(key==='tighter')r.ratio=Math.max(12,r.ratio-sign);
+    if(key==='wider')r.ratio=Math.min(18,r.ratio+sign);
+    if(key==='steepLonger')r.steepAdj=(r.steepAdj||0)+30*sign;
+    if(key==='steepShorter')r.steepAdj=(r.steepAdj||0)-30*sign;
+  };
+  if(k==='revert'&&undo)act(undo,-1);else act(k,1);
+  persist();
+}
+function lastBrew(beanId){return st.brews.filter(x=>x.beanId===beanId).sort((a,b)=>a.date<b.date?1:-1)[0];}
+
+/* ---------- views ---------- */
+function seg(name,opts,cur){return '<div class="seg" role="group">'+opts.map(o=>'<button type="button" data-set="'+name+'" data-val="'+o[0]+'" aria-pressed="'+(String(cur)===String(o[0]))+'">'+o[1]+'</button>').join('')+'</div>';}
+
+function pourSvg(paused){
+  return '<div class="pour'+(paused?' paused':'')+'"><svg width="260" height="150" viewBox="0 0 300 164" role="img" aria-label="Water pouring into the V60 and dripping into the server">'+
+  '<path d="M40 22 C70 6 92 12 104 24" fill="none" stroke="#A7B8C8" stroke-width="5" stroke-linecap="round"/>'+
+  '<path class="stream" d="M104 24 C120 30 140 34 148 44" fill="none" stroke="#9FD0F0" stroke-width="3" stroke-linecap="round"/>'+
+  '<path d="M108 42 L192 42 L162 98 L138 98 Z" fill="none" stroke="#EAF2F8" stroke-width="2.5" stroke-linejoin="round"/>'+
+  '<path d="M118 54 L182 54 L162 92 L138 92 Z" fill="#6B4A33"/><rect x="132" y="98" width="36" height="5" rx="2" fill="#EAF2F8"/>'+
+  '<circle class="drip" cx="150" cy="108" r="2.5" fill="#D29B6C"/><circle class="drip2" cx="150" cy="108" r="2" fill="#D29B6C"/>'+
+  '<path d="M118 120 L182 120 L178 158 L122 158 Z" fill="none" stroke="#EAF2F8" stroke-width="2.5" stroke-linejoin="round"/>'+
+  '<rect class="level" x="124" y="136" width="52" height="20" rx="3" fill="#8A5A36"/></svg></div>';
+}
+
+function viewBrew(){
+  if(tasting)return viewTasting();
+  if(timer.on)return viewTimer();
+  const r=st.recipe,c=calc(),b=bean(r.beanId),prev=lastBrew(r.beanId);
+  let h='';
+  if(picker)return viewPicker();
+  h+='<section class="card"><div class="label">'+t('bean')+'</div>';
+  if(b){
+    h+='<div class="row" style="flex-wrap:nowrap">'+thumb(b,56)+'<div style="flex:1;min-width:0"><div class="bean-title">'+esc(b.name)+'</div><div class="muted">'+esc(b.brand)+' · '+t('c_'+b.origin)+'</div></div><button type="button" class="chip" data-act="pick">'+t('change')+'</button></div>';
+    h+='<div class="muted">'+(b.pnote?esc(b.pnote):t('p_'+b.process))+' · '+t('r_'+b.roast)+(b.roastEst?' ('+t('estimated')+')':'')+(b.notes?' · '+esc(b.notes):'')+'</div>';
+    if(b.cid&&!st.beans.some(x=>x.id===b.id))h+='<div class="field"><label class="label" for="roastIn">'+t('roastOpt')+'</label><input id="roastIn" type="date" value="'+esc(b.roastDate)+'" data-roast="'+b.cid+'"></div>';
+    if(b.roastDate){const ds=daysSince(b.roastDate);h+='<div class="muted">'+t('daysSince',{n:digits(ds)})+' · '+(ds<4?t('tooFresh'):(ds>42?t('stale'):t('peak')))+'</div>';}
+  }else h+='<button type="button" class="btn ghost small" data-act="pick">'+t('noBeanYet')+'</button>';
+  if(prev&&prev.fix)h+='<div class="muted">'+t('lastTime',{s:'<b style="color:var(--accent)">'+t('f_'+prev.fix.primary)+'</b>'})+'</div>';
+  h+='</section>';
+  h+='<section class="card"><div class="label">V60</div>'+seg('mode',[['hot','🔥 '+t('hot')],['iced','🧊 '+t('iced')]],r.mode)+'</section>';
+  h+='<section class="card"><div class="grid2">';
+  h+='<div class="field"><label class="label" for="coffeeIn">'+t('coffeeG')+'</label><input id="coffeeIn" type="number" inputmode="decimal" min="5" max="60" step="0.5" value="'+r.coffee+'" data-rec="coffee"></div>';
+  h+='<div class="field"><label class="label" for="dripSel">'+t('dripper')+'</label><select id="dripSel" data-rec="dripper"><option value="01"'+(r.dripper==='01'?' selected':'')+'>V60 01</option><option value="02"'+(r.dripper==='02'?' selected':'')+'>V60 02</option></select></div>';
+  h+='</div><div class="field"><label class="label" for="ratioIn">'+t('ratio')+' <b id="ratioVal" style="color:var(--text)">'+digits('1:'+r.ratio)+'</b></label><input id="ratioIn" type="range" min="12" max="18" step="0.5" value="'+r.ratio+'" data-rec="ratio"></div>';
+  if(r.mode==='iced')h+='<div class="field"><label class="label" for="iceIn">'+t('iceShare')+' <b id="iceVal" style="color:var(--text)">'+digits(r.iceShare)+'%</b></label><input id="iceIn" type="range" min="35" max="45" step="1" value="'+r.iceShare+'" data-rec="iceShare"></div>';
+  h+='<div id="calcOut">'+calcOut(c)+'</div></section>';
+  h+='<button type="button" class="btn" data-act="start">'+t('startBrew')+'</button>';
+  return h;
+}
+function calcOut(c){
+  const r=st.recipe;let h='<div class="stats">';
+  h+='<div class="stat"><b>'+n(c.C)+' g</b><span>'+t('outCoffee')+'</span></div>';
+  h+='<div class="stat"><b>'+n(c.H)+' g</b><span>'+(r.mode==='iced'?t('outHot'):t('outWater'))+'</span></div>';
+  if(r.mode==='iced')h+='<div class="stat hi"><b>'+n(c.I)+' g</b><span>🧊 '+t('outIce')+'</span></div>';
+  else h+='<div class="stat hi"><b>'+digits('1:'+r.ratio)+'</b><span>'+t('ratio')+'</span></div>';
+  h+='<div class="stat"><b>'+n(c.B)+' g</b><span>'+t('outBloom')+'</span></div>';
+  h+='<div class="stat"><b>'+temp(c.T)+'</b><span>'+t('outTemp')+'</span></div>';
+  h+='<div class="stat"><b>'+digits(G().clicks)+'</b><span>'+t('outGrind')+' · '+t('clicks')+'</span></div>';
+  h+='</div><div class="muted">'+t('outYield')+': ~'+n(c.Y)+' ml · ⚙️ '+esc(G().name)+'</div>';
+  const sg=suggestClicks();
+  if(sg!==G().clicks)h+='<div class="row between"><span class="muted">'+t('suggested',{n:digits(sg)})+'</span><button type="button" class="chip" data-act="useSuggest">'+t('useIt')+'</button></div>';
+  if(c.warn)h+='<div class="warn">⚠️ '+c.warn+'</div>';
+  h+='<div class="label">'+t('steps')+'</div><ol class="steps">'+c.steps.map(s=>'<li><span>'+t(s.k,{g:digits(s.g)})+'</span><span class="tm">'+mmss(s.at)+'</span></li>').join('')+'</ol>';
+  return h;
+}
+function elapsed(){return timer.acc+(timer.on&&!timer.paused?(Date.now()-timer.start)/1000:0);}
+function viewTimer(){
+  return '<section class="card">'+pourSvg(timer.paused)+'<div class="clock" id="clock">'+mmss(elapsed())+'</div><div class="muted" id="nextLine" style="text-align:center"></div><ol class="steps" id="tSteps"></ol></section>'+
+  '<div class="grid2"><button type="button" class="btn ghost small" data-act="pause">'+(timer.paused?t('resume'):t('pause'))+'</button><button type="button" class="btn ghost small" data-act="cancel">'+t('cancel')+'</button></div>'+
+  '<button type="button" class="btn" data-act="finish">'+t('finish')+' ✓</button>';
+}
+function tick(){
+  const el=document.getElementById('clock');if(!el)return;
+  const e=elapsed(),steps=calc().steps;el.textContent=mmss(e);
+  let cur=0;steps.forEach((s,i)=>{if(e>=s.at)cur=i;});
+  const nx=steps[cur+1];
+  document.getElementById('nextLine').textContent=nx&&nx.k!=='st_done'?t('nextIn',{s:mmss(nx.at-e)}):t('allPoured');
+  document.getElementById('tSteps').innerHTML=steps.map((s,i)=>'<li class="'+(i===cur?'now':(i<cur?'past':''))+'"><span>'+t(s.k,{g:digits(s.g)})+'</span><span class="tm">'+mmss(s.at)+'</span></li>').join('');
+}
+function viewTasting(){
+  const ts=tasting,prev=lastBrew(st.recipe.beanId);let h='';
+  h+='<section class="card"><h1>'+t('tasteTitle')+'</h1><div class="muted">'+beanLabel(bean(st.recipe.beanId))+'</div>';
+  h+='<div class="label">'+t('rating')+'</div><div class="faces" role="group">'+FACES.map((f,i)=>'<button type="button" class="face" data-rate="'+(i+1)+'" aria-label="'+(i+1)+' / 5" aria-pressed="'+(ts.rating===i+1)+'">'+f+'</button>').join('')+'</div>';
+  h+='<div class="label">'+t('itTasted')+'</div><div class="chips">'+TAGS.map(k=>'<button type="button" class="chip" data-tag="'+k+'" aria-pressed="'+ts.tags.includes(k)+'">'+t('tag_'+k)+'</button>').join('')+'</div>';
+  h+='<div class="row between"><span class="label">'+t('totalTime')+'</span><span class="row"><button type="button" class="chip" data-time="-5" aria-label="-5 s">−5s</button><b style="font-variant-numeric:tabular-nums">'+mmss(ts.time)+'</b><button type="button" class="chip" data-time="5" aria-label="+5 s">+5s</button></span></div>';
+  if(prev)h+='<div class="label">'+t('vsLast')+'</div>'+seg('vs',[['better',t('better')],['same',t('same')],['worse',t('worse')]],ts.vs);
+  h+='<div class="field"><label class="label" for="noteIn">'+t('note')+'</label><textarea id="noteIn">'+esc(ts.note)+'</textarea></div>';
+  h+='<button type="button" class="btn ghost" data-act="fix">'+t('getFix')+'</button></section>';
+  if(ts.fix){
+    const f=ts.fix;let line='';
+    const after=grinderAfter(f.primary);if(after!=null)line='<div class="row" style="gap:8px">⚙️ '+t('grinderLine',{name:esc(G().name),a:digits(G().clicks),b:'<b style="color:var(--accent)">'+digits(after)+'</b>'})+'</div>';
+    h+='<section class="card fix"><div class="eyebrow">'+t('nextTime')+'</div><div class="big">'+(f.primary==='revert'?t('f_revert')+': '+t('f_'+f.undo):t('f_'+f.primary))+'</div>'+line+
+       '<div class="muted">'+f.reasons.join(' ')+'</div>'+(f.second?'<div class="muted">'+t('ifNot')+': <b style="color:var(--text)">'+t('f_'+f.second)+'</b></div>':'')+
+       (f.primary!=='keep'&&!ts.applied?'<button type="button" class="btn ghost small" data-act="apply">'+t('apply')+'</button>':'')+
+       (ts.applied?'<div style="color:var(--good)">✓ '+t('applied')+'</div>':'')+'</section>';
+  }
+  h+='<button type="button" class="btn" data-act="saveTaste">'+t('save')+' ❄️</button>';
+  return h;
+}
+function viewPicker(){
+  let h='<section class="card"><div class="row between"><h2>'+(picker==='roasteries'?t('pickRoastery'):t('pickBean'))+'</h2><button type="button" class="chip" data-act="'+(picker==='roasteries'?'pickClose':'pickBack')+'">'+(picker==='roasteries'?t('cancel'):t('back'))+'</button></div>';
+  if(picker==='roasteries'){
+    h+=ROASTERIES.map(r=>'<button type="button" class="card" data-roastery="'+r.id+'" style="flex-direction:row;align-items:center;text-align:start;cursor:pointer;width:100%">'+logo(r,56)+'<span style="display:flex;flex-direction:column;gap:2px"><span class="bean-title">'+rn(r)+'</span><span class="muted">'+r.place[st.lang]+' · '+t('beansCount',{n:digits(live(r).length)})+'</span></span></button>').join('');
+    if(st.beans.length)h+='<button type="button" class="card" data-act="pickOwn" style="flex-direction:row;align-items:center;text-align:start;cursor:pointer;width:100%"><span aria-hidden="true" style="flex:none;width:56px;height:56px;border-radius:14px;background:var(--card2);border:1.5px solid var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:26px">🫘</span><span style="display:flex;flex-direction:column;gap:2px"><span class="bean-title">'+t('ownBeans')+'</span><span class="muted">'+t('beansCount',{n:digits(st.beans.length)})+'</span></span></button>';
+  }else{
+    const pr=ROASTERIES.find(r=>r.id===picker),list=pr?live(pr).map(c=>bean(c.cid)):st.beans;
+    h+=legend()+'<div class="grid2">'+list.map(b=>'<button type="button" data-pickb="'+b.id+'" aria-pressed="'+(b.id===st.recipe.beanId)+'" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:12px;border-radius:16px;border:1.5px solid '+(b.id===st.recipe.beanId?'var(--accent)':'var(--line)')+';background:var(--bg);text-align:start;cursor:pointer;min-width:0">'+thumb(b,48)+'<span style="font-weight:700;line-height:1.25">'+esc(b.name)+'</span><span class="muted" style="font-size:12px">'+(b.region?esc(b.region):t('c_'+b.origin))+' · '+(b.pnote?esc(b.pnote):t('p_'+b.process))+'</span>'+(catItem(b.id)&&catItem(b.id).soldOut?'<span class="muted" style="font-size:12px">'+t('soldOut')+'</span>':'')+'</button>').join('')+'</div>';
+  }
+  return h+'</section>';
+}
+function viewBeans(){
+  let h='<div class="row between"><h1>'+t('tabBeans')+' 🫘</h1><button type="button" class="btn small" data-act="newBean">'+t('addBean')+'</button></div>'+
+    seg('beansView',[['lib',t('library')],['mine',t('myBeans')]],st.beansView||'lib');
+  if(st.beansView!=='mine'&&!beanForm)return h+viewLibrary();
+  h+='<div class="muted">'+t('libraryNote')+'</div>';
+  if(!st.beans.length&&!beanForm)h+='<div class="card muted">'+t('noOwnBeans')+'</div>';
+  if(beanForm){
+    const d=beanForm.draft;
+    const opt=(arr,pre,cur)=>arr.map(k=>'<option value="'+k+'"'+(k===cur?' selected':'')+'>'+t(pre+k)+'</option>').join('');
+    h+='<form class="card" id="beanForm" novalidate>'+
+      '<div class="grid2"><div class="field"><label class="label" for="bf_brand">'+t('brand')+'</label><input id="bf_brand" type="text" value="'+esc(d.brand)+'"></div>'+
+      '<div class="field"><label class="label" for="bf_name">'+t('name')+'</label><input id="bf_name" type="text" value="'+esc(d.name)+'"></div>'+
+      '<div class="field"><label class="label" for="bf_origin">'+t('origin')+'</label><select id="bf_origin">'+opt(COUNTRIES,'c_',d.origin)+'</select></div>'+
+      '<div class="field"><label class="label" for="bf_region">'+t('region')+'</label><input id="bf_region" type="text" value="'+esc(d.region)+'"></div>'+
+      '<div class="field"><label class="label" for="bf_variety">'+t('variety')+'</label><input id="bf_variety" type="text" value="'+esc(d.variety)+'"></div>'+
+      '<div class="field"><label class="label" for="bf_process">'+t('process')+'</label><select id="bf_process">'+opt(PROCESSES,'p_',d.process)+'</select></div>'+
+      '<div class="field"><label class="label" for="bf_roast">'+t('roast')+'</label><select id="bf_roast">'+opt(ROASTS,'r_',d.roast)+'</select></div>'+
+      '<div class="field"><label class="label" for="bf_date">'+t('roastDate')+'</label><input id="bf_date" type="date" value="'+esc(d.roastDate)+'"></div></div>'+
+      '<div class="field"><label class="label" for="bf_notes">'+t('notes')+'</label><input id="bf_notes" type="text" value="'+esc(d.notes)+'"></div>'+
+      '<label class="row"><input id="bf_decaf" type="checkbox"'+(d.decaf?' checked':'')+' style="width:22px;height:22px;accent-color:var(--accent)"> '+t('decaf')+'</label>'+
+      (d.cid?'<div class="muted">'+t('prefilled')+(d.roastEst?' '+t('roastGuess'):'')+'</div>':'')+
+      (beanForm.err?'<div class="warn" role="alert">'+t('required')+'</div>':'')+
+      '<div class="grid2"><button type="button" class="btn ghost small" data-act="closeBean">'+t('cancel')+'</button><button type="submit" class="btn small">'+t('saveBean')+'</button></div></form>';
+  }
+  h+='<div class="list">'+st.beans.map(b=>{
+    const ds=daysSince(b.roastDate),hint=ds<4?t('tooFresh'):(ds>42?t('stale'):t('peak'));
+    return '<article class="card"><div class="row between"><div class="bean-title">'+esc(b.name)+'</div>'+(b.example?'<span class="badge ex">'+t('example')+'</span>':'')+'</div>'+
+      '<div class="muted">'+esc(b.brand)+' · '+t('c_'+b.origin)+(b.region?' · '+esc(b.region):'')+(b.variety?' · '+esc(b.variety):'')+'</div>'+
+      '<div class="row"><span class="badge">'+(b.pnote?esc(b.pnote):t('p_'+b.process))+'</span><span class="badge">'+t('r_'+b.roast)+'</span>'+(b.alt?'<span class="badge">'+t('altM',{a:digits(b.alt)})+'</span>':'')+(b.decaf?'<span class="badge">'+t('decaf')+'</span>':'')+'</div>'+
+      (b.notes?'<div>'+esc(b.notes)+'</div>':'')+
+      '<div class="muted">'+t('daysSince',{n:digits(ds)})+' · '+hint+'</div>'+
+      '<button type="button" class="btn ghost small" data-use="'+b.id+'">'+t('useBean')+' ☕</button></article>';
+  }).join('')+'</div>';
+  return h;
+}
+function viewLibrary(){
+  const r=ROASTERIES.find(x=>x.id===st.libR)||ROASTERIES[0];
+  let h=seg('libR',ROASTERIES.map(x=>[x.id,x.short[st.lang]]),r.id);
+  h+='<section class="card"><div class="row between"><div class="row" style="flex-wrap:nowrap">'+logo(r,44)+'<div><div class="bean-title">'+rn(r)+'</div><div class="muted">'+r.place[st.lang]+' · '+t('beansCount',{n:digits(live(r).length)})+'</div></div></div><a href="'+r.url+'" target="_blank" rel="noopener" style="color:var(--accent)">'+r.site+' ↗</a></div>'+
+    '<div class="muted">'+t('fromSite',{s:r.site,d:digits(r.checked)})+'</div>'+legend()+'</section>';
+  h+='<div class="list">'+live(r).map(c=>{
+    return '<article class="card"'+(c.soldOut?' style="opacity:.75"':'')+'><div class="row" style="flex-wrap:nowrap">'+thumb(c,48)+'<div style="flex:1;min-width:0"><div class="bean-title">'+esc(c.name)+'</div><span class="badge">'+t('priceFrom',{p:digits(c.price)})+(c.size?' · '+digits(c.size)+' g':'')+'</span>'+(c.soldOut?' <span class="badge">'+t('soldOut')+'</span>':'')+'</div></div>'+
+      '<div class="muted">'+t('c_'+c.origin)+(c.region?' · '+esc(c.region):'')+'</div>'+
+      '<div class="row"><span class="badge">'+(c.pnote?esc(c.pnote):t('p_'+c.process))+'</span>'+(c.decaf&&c.pnote!=='Decaf'?'<span class="badge">'+t('decaf')+'</span>':'')+(c.alt?'<span class="badge">'+t('altM',{a:digits(c.alt)})+'</span>':'')+'</div>'+
+      (c.notes?'<div>'+esc(c.notes)+'</div>':'<div class="muted">'+t('noDetails')+'</div>')+
+      (c.uses.length?'<div class="muted">'+t('bestFor')+': '+c.uses.map(u=>t('u_'+u)).join(' · ')+'</div>':'')+
+      '<button type="button" class="btn ghost small" data-use="'+c.cid+'">'+t('useBean')+' ☕</button></article>';
+  }).join('')+'</div>';
+  return h;
+}
+function viewLog(){
+  let h='<h1>'+t('tabLog')+' 📓</h1>';
+  const list=st.brews.slice().sort((a,b)=>a.date<b.date?1:-1);
+  if(!list.length)return h+'<div class="card muted">'+t('emptyLog')+'</div>';
+  h+='<div class="list">'+list.map(w=>{
+    const b=bean(w.beanId);
+    return '<article class="card"><div class="row between"><div class="bean-title">'+FACES[(w.rating||3)-1]+' '+beanLabel(b)+'</div>'+(w.example?'<span class="badge ex">'+t('example')+'</span>':'')+'</div>'+
+      '<div class="muted">'+digits(w.date)+' · '+t(w.method)+' · '+(w.mode==='iced'?'🧊 '+t('iced'):'🔥 '+t('hot'))+' · '+n(w.coffee)+' g / '+n(w.water)+' g'+(w.ice?' + '+n(w.ice)+' g 🧊':'')+' · '+temp(w.temp)+' · '+t('drawdownShort',{t:mmss(w.time)})+'</div>'+
+      (w.tags.length?'<div class="chips">'+w.tags.map(k=>'<span class="badge">'+t('tag_'+k)+'</span>').join('')+'</div>':'')+
+      (w.note?'<div>'+esc(w.note)+'</div>':'')+
+      (w.fix?'<div><span class="eyebrow">'+t('nextTime')+'</span> '+t('f_'+w.fix.primary)+'</div>':'')+
+      '<div><button type="button" class="chip" data-del="'+w.id+'">'+t('del')+'</button></div></article>';
+  }).join('')+'</div>';
+  return h;
+}
+function viewMe(){
+  return '<h1>'+t('tabMe')+'</h1>'+
+  '<section class="card"><div class="label">'+t('language')+'</div>'+seg('lang',[['en','English'],['ar','العربية']],st.lang)+
+  '<div class="label">'+t('digits')+'</div>'+seg('digits',[['western',t('western')],['arabic',t('arabicDigits')]],st.digits)+
+  '<div class="label">'+t('tempUnit')+'</div>'+seg('tempUnit',[['C','°C'],['F','°F']],st.tempUnit)+
+  '<div class="label">'+t('preset')+'</div>'+seg('preset',[['bright',t('bright')],['balanced',t('balanced')],['rich',t('rich')]],st.preset)+
+  '</section>'+
+  (function(){const g=G();return '<section class="card"><div class="field"><label class="label" for="gSel">⚙️ '+t('activeGrinder')+'</label><select id="gSel" data-grinder="1">'+
+  st.grinders.map(x=>'<option value="'+x.id+'"'+(x.id===g.id?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></div>'+
+  '<div class="field"><label class="label" for="gc_'+g.id+'">'+t('grinderSetting')+'</label><input id="gc_'+g.id+'" type="number" min="1" max="120" value="'+g.clicks+'" data-me="gclicks:'+g.id+'"></div></section>';})()+
+  '<section class="card"><div class="label">'+t('notBuilt')+'</div><ul class="plain"><li>'+t('nb1')+'</li><li>'+t('nb2')+'</li><li>'+t('nb3')+'</li><li>'+t('nb4')+'</li><li>'+t('nb5')+'</li></ul></section>'+
+  '<div class="muted">'+t('deviceNote')+'</div><button type="button" class="btn ghost small" data-act="reset">'+t('resetData')+'</button>';
+}
+
+function render(){
+  document.documentElement.lang=st.lang;document.documentElement.dir=st.lang==='ar'?'rtl':'ltr';
+  const hr=new Date().getHours();
+  const head='<header class="top"><div><div class="greet">'+(hr<16?t('morning'):t('evening'))+' ☕❄️</div><div style="font-family:var(--display);font-weight:700;font-size:24px">'+t('appName')+'</div></div>'+
+    '<button type="button" class="lang-btn" data-act="lang" aria-label="Language / اللغة">'+(st.lang==='en'?'EN | ع':'ع | EN')+'</button></header>';
+  const body={brew:viewBrew,beans:viewBeans,log:viewLog,me:viewMe}[st.tab]();
+  document.getElementById('app').innerHTML=head+body;
+  const tabs=[['brew','☕',t('tabBrew')],['beans','🫘',t('tabBeans')],['log','📓',t('tabLog')],['me','⚙️',t('tabMe')]];
+  document.getElementById('tabs').innerHTML='<div class="in">'+tabs.map(x=>'<button type="button" data-tab="'+x[0]+'"'+(st.tab===x[0]?' aria-current="page"':'')+'><span class="ic" aria-hidden="true">'+x[1]+'</span>'+x[2]+'</button>').join('')+'</div>';
+  if(timer.on)tick();
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('button,[data-tab]');if(!el)return;
+  const d=el.dataset;
+  if(d.tab){st.tab=d.tab;persist();render();window.scrollTo(0,0);return;}
+  if(d.set){
+    const k=d.set,v=d.val;
+    if(k==='vs'){tasting.vs=v;tasting.fix=null;}
+    else if(['lang','digits','tempUnit','preset','beansView','grinderId','libR'].includes(k))st[k]=v;
+    else st.recipe[k]=v;
+    persist();render();return;
+  }
+  if(d.rate){tasting.rating=Number(d.rate);tasting.fix=null;render();return;}
+  if(d.tag){const i=tasting.tags.indexOf(d.tag);if(i>=0)tasting.tags.splice(i,1);else{if(d.tag==='right')tasting.tags=[];else tasting.tags=tasting.tags.filter(x=>x!=='right');tasting.tags.push(d.tag);}tasting.fix=null;render();return;}
+  if(d.time){tasting.time=Math.max(30,tasting.time+Number(d.time));tasting.fix=null;render();return;}
+  if(d.lib){const c=catItem(d.lib);if(c){beanForm={err:false,draft:{cid:c.cid,brand:roasteryOf(c.cid).brand,name:c.name,origin:c.origin,region:c.region,variety:'',process:c.process,pnote:c.pnote||'',roast:roastGuess(c),roastEst:true,roastDate:'',notes:c.notes,decaf:!!c.decaf,alt:c.alt,price:c.price,uses:c.uses}};st.beansView='mine';persist();render();window.scrollTo(0,0);}return;}
+  if(d.roastery){picker=d.roastery;render();return;}
+  if(d.pickb){st.recipe.beanId=d.pickb;picker=null;persist();render();window.scrollTo(0,0);return;}
+  if(d.use){picker=null;st.recipe.beanId=d.use;st.tab='brew';persist();render();window.scrollTo(0,0);return;}
+  if(d.del){st.brews=st.brews.filter(w=>w.id!==d.del);persist();render();return;}
+  switch(d.act){
+    case 'lang':st.lang=st.lang==='en'?'ar':'en';persist();render();break;
+    case 'pick':picker='roasteries';render();break;
+        case 'pickOwn':picker='own';render();break;
+    case 'pickBack':picker='roasteries';render();break;
+    case 'pickClose':picker=null;render();break;
+    case 'useSuggest':G().clicks=suggestClicks();persist();render();break;
+    case 'start':timer={on:true,paused:false,start:Date.now(),acc:0,iv:setInterval(tick,250)};
+      try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(l=>{timer.lock=l;}).catch(()=>{});}catch(err){}
+      render();window.scrollTo(0,0);break;
+    case 'pause':if(timer.paused){timer.start=Date.now();timer.paused=false;}else{timer.acc=elapsed();timer.paused=true;}render();break;
+    case 'cancel':stopTimer();render();break;
+    case 'finish':{const e2=Math.round(elapsed());stopTimer();tasting={rating:0,tags:[],time:e2,vs:null,note:'',fix:null,applied:false};render();window.scrollTo(0,0);break;}
+    case 'fix':grabNote();if(!tasting.rating&&!tasting.tags.length){toast(t('pickTaste'));break;}tasting.fix=suggest(tasting);render();break;
+    case 'apply':grabNote();applyFix(tasting.fix.primary,tasting.fix.undo);tasting.applied=true;toast(t('applied'));render();break;
+    case 'saveTaste':{
+      grabNote();if(!tasting.rating&&!tasting.tags.length){toast(t('pickTaste'));break;}
+      if(!tasting.fix)tasting.fix=suggest(tasting);
+      const r=st.recipe,c=calc();
+      st.brews.push({id:'w'+Date.now(),date:today(0),beanId:r.beanId,method:r.method,mode:r.mode,coffee:c.C,water:c.H,ice:c.I,ratio:r.ratio,temp:c.T,clicks:G().clicks,grinder:G().name,time:tasting.time,rating:tasting.rating||3,tags:tasting.tags.slice(),vs:tasting.vs,note:tasting.note,fix:{primary:tasting.fix.primary,second:tasting.fix.second}});
+      tasting=null;st.tab='log';persist();toast(t('saved'));render();window.scrollTo(0,0);break;}
+    case 'newBean':beanForm={err:false,draft:{brand:'',name:'',origin:'ET',region:'',variety:'',process:'washed',roast:'l',roastDate:today(7),notes:'',decaf:false}};render();break;
+    case 'closeBean':beanForm=null;render();break;
+    case 'reset':stopTimer();tasting=null;beanForm=null;const lang=st.lang;st=examples();st.lang=lang;persist();toast(t('resetDone'));render();break;
+  }
+});
+function grabNote(){const el=document.getElementById('noteIn');if(el&&tasting)tasting.note=el.value;}
+function stopTimer(){clearInterval(timer.iv);try{timer.lock&&timer.lock.release();}catch(e){}timer={on:false,paused:false,start:0,acc:0,iv:null};}
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='beanForm')return;e.preventDefault();
+  const v=id=>document.getElementById(id).value.trim();
+  const x=(beanForm&&beanForm.draft)||{};
+  const d={cid:x.cid,pnote:x.pnote,roastEst:x.roastEst,alt:x.alt,price:x.price,uses:x.uses,brand:v('bf_brand'),name:v('bf_name'),origin:v('bf_origin'),region:v('bf_region'),variety:v('bf_variety'),process:v('bf_process'),roast:v('bf_roast'),roastDate:v('bf_date'),notes:v('bf_notes'),decaf:document.getElementById('bf_decaf').checked};
+  if(!d.brand||!d.name||!d.roastDate){beanForm={err:true,draft:d};render();return;}
+  d.id='b'+Date.now();st.beans.unshift(d);beanForm=null;persist();toast(t('beanSaved'));render();
+});
+document.addEventListener('input',e=>{
+  if(e.target.dataset.grinder){st.grinderId=e.target.value;persist();render();return;}
+  const el=e.target,k=el.dataset.rec;
+  if(k){
+    if(k==='beanId'||k==='dripper'){st.recipe[k]=el.value;persist();render();return;}
+    const val=Number(el.value);if(!isFinite(val))return;st.recipe[k]=val;persist();
+    if(k==='ratio'){const rv=document.getElementById('ratioVal');if(rv)rv.textContent=digits('1:'+val);}
+    if(k==='iceShare'){const iv=document.getElementById('iceVal');if(iv)iv.textContent=digits(val)+'%';}
+    const out=document.getElementById('calcOut');if(out)out.innerHTML=calcOut(calc());
+    return;
+  }
+  const m=el.dataset.me;
+  if(m){
+    const val=Number(el.value);if(!isFinite(val)||val<=0)return;
+    if(m==='cupSize')st.cupSize=val;
+    else{const [f,id]=m.split(':'),g=st.grinders.find(x=>x.id===id);if(g){if(f==='gclicks')g.clicks=val;if(f==='gstep')g.step=val;}}
+    persist();
+  }
+  if(el.dataset.roast){st.roastDates=st.roastDates||{};st.roastDates[el.dataset.roast]=el.value;persist();}
+});
+document.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.rec==='beanId')return;});
+
+/* ---------- snow ---------- */
+(function(){const box=document.getElementById('snow');let h='';for(let i=0;i<18;i++){const s=2+Math.random()*3;h+='<div class="flake" style="left:'+(Math.random()*100)+'%;width:'+s+'px;height:'+s+'px;opacity:'+(.15+Math.random()*.3)+';animation-duration:'+(9+Math.random()*8)+'s;animation-delay:-'+(Math.random()*15)+'s"></div>';}box.innerHTML=h;})();
+
+render();
+})();
+</script>
+
+<script>
+if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+</script>
+</body>
+</html>
