@@ -230,7 +230,7 @@ ar:{
 }};
 const COUNTRIES=['ET','CO','KE','BR','YE','SA','PA','GT','CR','RW','ID','HN','PE','SV','EC','UG','MY','BL','XX'];
 /* Roots Roastery catalog, from rootsroastery.net product pages, refreshed 2026-10-23 */
-const ROOTS_CHECKED='2026-11-14';
+const ROOTS_CHECKED='2026-11-21';
 const ROOTS=[
   {cid:'r1',name:'Brazil Diamond',origin:'BR',region:'',process:'natural',alt:'',notes:'Dark chocolate, nuts',uses:['espresso','milk'],price:'4.00'},
   {cid:'r2',name:'Cocoa Caramel Blend',origin:'BL',blend:['BR','CO'],region:'Brazil, Colombia',process:'other',pnote:'Blend',alt:'',notes:'Chocolate, caramel',uses:['espresso','milk'],price:'4.50'},
@@ -261,7 +261,7 @@ const ROOTS=[
 function roastGuess(c){return c.uses.includes('filter')?'ml':(c.uses.length?'md':'m');}
 /* Jebla Coffee Roastry, 250 g bags, from jeblacoffeeroasters.com/collections/omni-roast-1 on 2026-10-23 */
 const JEBLA=[
-  {cid:'j1',name:'Romario',origin:'BR',region:'',process:'natural',alt:'',notes:'Caramel, chocolate, nuts · SCA 83',uses:['espresso','filter','milk'],price:'3.750',soldOut:true},
+  {cid:'j1',name:'Romario',origin:'BR',region:'',process:'natural',alt:'',notes:'Caramel, chocolate, nuts · SCA 83',uses:['espresso','filter','milk'],price:'3.750'},
   {cid:'j2',name:'KitKat',origin:'BR',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Milk chocolate, wafer, hazelnut, caramel · SCA 87',uses:['espresso','filter','milk'],price:'5.000',soldOut:true},
   {cid:'j3',name:'Derwaza Blend',origin:'BL',blend:['ET','HN','BR'],region:'Ethiopia, Honduras, Brazil',process:'natural',alt:'',notes:'Dark chocolate, almond, blackberry, caramel · SCA 84',uses:['espresso','filter','milk'],price:'4.750'},
   {cid:'j4',name:'Decaf Colombia',origin:'CO',region:'',process:'other',pnote:'Decaf',decaf:true,alt:'',notes:'',uses:[],price:'4.500',gone:true},
@@ -271,10 +271,12 @@ const JEBLA=[
   {cid:'j8',name:'Qayel Ali (premium)',origin:'YE',region:'',process:'other',pnote:'Diwani',alt:'',notes:'Red fruits, spices, caramel, raisins · SCA 90+',uses:['filter'],price:'11.500',soldOut:true},
   {cid:'j9',name:'La Rosa',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Floral, fruity, bright · SCA 85',uses:['espresso','filter'],price:'5.750',gone:true},
   {cid:'j10',name:'Fresa',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Strawberry, red berries, brown sugar · SCA 86',uses:['filter'],price:'6.500'},
-  {cid:'j11',name:'Monte Roja',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Grape, floral, tutti frutti · SCA 87',uses:['filter'],price:'6.750',soldOut:true},
+  {cid:'j11',name:'Monte Roja',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Grape, floral, tutti frutti · SCA 87',uses:['filter'],price:'6.750'},
   {cid:'j12',name:'Nala',origin:'UG',region:'',process:'natural',alt:'',notes:'Berries, dark chocolate, brown sugar, spices · SCA 85',uses:['espresso','filter','milk'],price:'5.500'},
-  {cid:'j13',name:'Zorro',origin:'CO',region:'',process:'natural',alt:'1710',notes:'Mango, red berries, cherry, chocolate · SCA 88',uses:['espresso','filter'],price:'7.500',soldOut:true},
-  {cid:'j14',name:'Duraz',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Peach, strawberry, cantaloupe · SCA 88',uses:[],price:'6.500',soldOut:true}
+  {cid:'j13',name:'Zorro',origin:'CO',region:'',process:'natural',alt:'1710',notes:'Mango, red berries, cherry, chocolate · SCA 88',uses:['espresso','filter'],price:'7.500'},
+  {cid:'j14',name:'Duraz',origin:'CO',region:'',process:'other',pnote:'Co-ferment',alt:'',notes:'Peach, strawberry, cantaloupe · SCA 88',uses:[],price:'6.500'},
+  {cid:'j15',name:'Kongo',origin:'ET',region:'Kongo',process:'other',alt:'',notes:'',uses:[],price:'7.500'},
+  {cid:'j16',name:'Dansa',origin:'ET',region:'Dansa',process:'other',alt:'',notes:'',uses:[],price:'6.750'}
 ];
 /* 48 East Coffee Roasters, filter coffee, from 48e.co/collections/filter-coffee on 2026-10-23. CM = carbonic maceration */
 const EAST48=[
@@ -301,8 +303,8 @@ const LOGOS={jebla:'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDB
 function logo(r,sz){return LOGOS[r.id]?'<img src="'+LOGOS[r.id]+'" alt="" width="'+sz+'" height="'+sz+'" style="flex:none;width:'+sz+'px;height:'+sz+'px;border-radius:50%;object-fit:cover;border:1.5px solid var(--line)">':'';}
 const ROASTERIES=[
   {id:'roots',short:{en:'Roots',ar:'روتس'},brand:'Roots Roastery',name:{en:'Roots Roastery',ar:'محمصة روتس'},place:{en:'Shuwaikh, Kuwait',ar:'الشويخ، الكويت'},mark:'R',site:'rootsroastery.net',url:'https://rootsroastery.net/en/product-category/coffee-beans/',checked:ROOTS_CHECKED,items:ROOTS},
-  {id:'jebla',short:{en:'Jebla',ar:'جبلة'},brand:'Jebla Coffee Roastry',name:{en:'Jebla Coffee Roastry',ar:'محمصة جبلة'},place:{en:'Kuwait',ar:'الكويت'},mark:'J',site:'jeblacoffeeroasters.com',url:'https://jeblacoffeeroasters.com/collections/omni-roast-1',checked:'2026-11-14',items:JEBLA},
-  {id:'east48',short:{en:'48 East',ar:'٤٨ إيست'},brand:'48 East Coffee Roasters',name:{en:'48 East Coffee Roasters',ar:'محمصة ٤٨ إيست'},place:{en:'Kuwait',ar:'الكويت'},mark:'48',site:'48e.co',url:'https://48e.co/collections/filter-coffee',checked:'2026-11-14',items:EAST48}
+  {id:'jebla',short:{en:'Jebla',ar:'جبلة'},brand:'Jebla Coffee Roastry',name:{en:'Jebla Coffee Roastry',ar:'محمصة جبلة'},place:{en:'Kuwait',ar:'الكويت'},mark:'J',site:'jeblacoffeeroasters.com',url:'https://jeblacoffeeroasters.com/collections/omni-roast-1',checked:'2026-11-21',items:JEBLA},
+  {id:'east48',short:{en:'48 East',ar:'٤٨ إيست'},brand:'48 East Coffee Roasters',name:{en:'48 East Coffee Roasters',ar:'محمصة ٤٨ إيست'},place:{en:'Kuwait',ar:'الكويت'},mark:'48',site:'48e.co',url:'https://48e.co/collections/filter-coffee',checked:'2026-11-21',items:EAST48}
 ];
 function roasteryOf(cid){return ROASTERIES.find(r=>r.items.some(x=>x.cid===cid));}
 function catItem(cid){const r=roasteryOf(cid);return r?r.items.find(x=>x.cid===cid):null;}
